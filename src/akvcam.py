@@ -35,19 +35,26 @@ class AkvCameraWriter:
 
     def writer_thread(self):
         while not self.is_stop:
-            elem = self.queue.get()
+            try:
+                elem = self.queue.get(timeout=1)
+            except:
+                print("akvcam waited longer as 1 second for a frame. Continuing.")
+                continue
             if elem is None:
-                break
+                error = "input queue for akvcam was empty"
+                raise Exception(error)
             image_data = cv2.resize(elem, (self.width, self.height)).tobytes()
             try:
                 os.write(self.d, image_data)
             except Exception:
-                break
+                error = "could not write image to akvcam output device"
+                raise IOError(error)
 
     def stop(self):
         with self.is_stop_lock:
-            self.is_stop=True
-        #self.thread.join()
+            self.is_stop = True
+        if self.thread.is_alive():
+            self.thread.join()
         os.close(self.d)
         print("stopped fake cam writer")
 

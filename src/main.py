@@ -55,8 +55,7 @@ def main():
     def sig_interrupt_handler(signal, frame, cam):
         print("Stopping fake cam process")
         cam.stop()
-        print("exit 0")
-        sys.exit(0)
+
 
     signal.signal(signal.SIGINT, partial(sig_interrupt_handler,cam=cam))
 
@@ -68,7 +67,7 @@ def main():
         '<ctrl>+5': partial(cam.add_to_scale_factor,0.1),
     }).start()
 
-    #keyboard.KeyboardListener(on_press=on_press).start()
+    # keyboard.KeyboardListener(on_press=on_press).start()
     print("Running...")
     print("Press CTRL-1 to deactivate and activate styling")
     print("Press CTRL-2 to load the previous style")
@@ -77,7 +76,11 @@ def main():
     print("Press CTRL-5 to increase the scale factor of the model input")
     print("Please CTRL-c to exit")
 
-    cam.run() # loops
+    cam.run()  # loops
+
+    print("exit 0")
+
+    sys.exit(0)
 
 
 

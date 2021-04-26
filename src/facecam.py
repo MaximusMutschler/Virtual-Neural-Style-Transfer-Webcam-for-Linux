@@ -22,6 +22,8 @@ class FakeCam:
             cartoonize_model_dir: str,
             style_model_dir: str,
     ) -> None:
+        self.check_webcam_existing(webcam_path)
+        self.check_webcam_existing(akvcam_path)
         self.scale_factor = scale_factor
         self.real_cam = RealCam(webcam_path, width, height, fps, codec)
         # In case the real webcam does not support the requested mode.
@@ -41,15 +43,19 @@ class FakeCam:
         self.styler = None
         self.set_style_number(self.style_number)
 
+    def check_webcam_existing(self, path):
+        if not os.path.exists(path):
+            error = "cam path not existing: " + path
+            print(error)
+            raise Exception(error)
+
     def put_frame(self, frame):
         self.fake_cam_writer.schedule_frame(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
     def stop(self):
         with self.stop_lock:
             self.is_stop = True
-        print("stopped fake cam")
-        self.real_cam.stop()
-        self.fake_cam_writer.stop()
+
 
 
 
@@ -79,6 +85,9 @@ class FakeCam:
                 print("FPS: {:6.2f}".format(self.current_fps), end="\r")
                 frame_count = 0
                 t0 = time.monotonic()
+        print("stopped fake cam")
+        self.real_cam.stop()
+        self.fake_cam_writer.stop()
 
     def _get_list_of_all_models(self, model_dir, file_endings=[".index", ".pth", ".model"]):
         list_of_paths = []
