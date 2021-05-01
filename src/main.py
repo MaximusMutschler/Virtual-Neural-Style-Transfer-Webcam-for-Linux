@@ -5,7 +5,7 @@ from functools import partial
 
 import pynput.keyboard as keyboard
 
-from facecam import FakeCam
+from fakecam import FakeCam
 
 
 def parse_args():
@@ -21,10 +21,10 @@ def parse_args():
     parser.add_argument("-C", "--codec", default='MJPG', type=str,
                         help="Set real webcam codec")
     parser.add_argument("-S", "--scale-factor", default=1.0, type=float,
-                        help="Scale factor of the image sent the neural network")  # TODO make this dynamical *1.1
+                        help="Scale factor of the image sent the neural network")
     parser.add_argument("-w", "--webcam-path", default="/dev/video0",
                         help="Set real webcam path")
-    parser.add_argument("-v", "--akvcam-path", default="/dev/video3",
+    parser.add_argument("-v", "--akvcam-path", default="/dev/video13",
                         help="virtual akvcam output device path")
     parser.add_argument("--cartoonize", action="store_true",
                         help="use cartoon style transfer from https://github.com/SystemErrorWang/White-box-Cartoonization")

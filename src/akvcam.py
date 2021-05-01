@@ -4,7 +4,8 @@ from fcntl import ioctl
 from queue import Queue
 
 import cv2
-import pyfakewebcam.v4l2 as v4l2
+
+import v4l2
 
 
 class AkvCameraWriter:
@@ -38,7 +39,7 @@ class AkvCameraWriter:
             try:
                 elem = self.queue.get(timeout=1)
             except:
-                print("akvcam waited longer as 1 second for a frame. Continuing.")
+                # print("akvcam waited longer as 1 second for a frame. Continuing.") TODO
                 continue
             if elem is None:
                 error = "input queue for akvcam was empty"

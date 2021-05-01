@@ -75,7 +75,8 @@ class FakeCam:
                     # frame_buffer=frame_buffer
                     # current_frame = self.cartoonizer.cartoonize_frame([current_frame])[0] # todo higher batch size does not help
                     current_frame = self.styler.stylize(current_frame)
-                except:
+                except Exception  as e:
+                    print("error during style transfer", e)
                     pass
             self.put_frame(current_frame)
             frame_count += 1

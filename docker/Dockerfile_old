@@ -1,0 +1,55 @@
+#FROM pytorch/pytorch:1.6.0-cuda10.1-cudnn7-runtimetime
+FROM tensorflow/tensorflow:1.15.5-gpu
+
+WORKDIR /stylecam/
+
+#RUN ls /stylecam/data/cartoonize_models
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt install -y tzdata
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      python3-numpy \
+      python3-opencv \
+      build-essential \
+      && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+RUN apt-get update &&  DEBIAN_FRONTEND=noninteractive apt-get install -y libudev-dev kbd console-data kmod
+RUN whoami
+#RUN dumpkeys --full-table
+
+#RUN touch /root/.Xauthority
+
+#RUN xauth add CS-WS02/unix:19  MIT-MAGIC-COOKIE-1  78c67db80dd17c27b6075d0723a39895
+
+
+
+
+
+
+#COPY foreground.jpg \
+#    foreground-mask.png \
+#    background.jpg \
+#    fake.py \
+#    akvcam.py \
+#    requirements.txt \
+#    /src/
+COPY ./src/ ./src/
+COPY ./requirements.txt .
+RUN mkdir data
+#RUN mkdir data/cartoonize_models
+#RUN mkdir data/style_transfer_models
+RUN ls src
+#RUN ls data/cartoonize_models
+#COPY readme.md /src/
+RUN pip install torch==1.6.0
+RUN pip install tensorflow-gpu==1.15
+RUN pip install opencv-python==4.2.0.32
+RUN pip install torchvision==0.7.0
+RUN pip install numpy==1.18.5
+RUN pip install pynput==1.7.3
+#RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install python-uinput
+#RUN xhost +
+
+ENTRYPOINT ["python3", "-u", "./src/main.py"]
+#ENTRYPOINT ["/bin/bash","-c","while :; do echo hallo; done"]
+#CMD ["--bodypix-url", "http://bodypix:9000/"]

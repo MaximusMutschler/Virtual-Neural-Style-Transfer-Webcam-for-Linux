@@ -1,0 +1,6 @@
+torch==1.6.0
+tensorflow-gpu==1.15
+opencv-python==4.2.0.32
+torchvision==0.7.0
+numpy==1.18.5
+pynput==1.7.3
