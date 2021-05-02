@@ -56,7 +56,7 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
    With a Geforce 2080TI we could achieve 12 fps for the artistic style transfer and 16 fps for the cartoon style
    transfer with a resolution of 1280x720
 2. Install [Docker](https://docs.docker.com/engine/install/ubuntu/) `curl https://get.docker.com | sh \
-  && sudo systemctl --now enable docker` and [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker). And add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Than log out and log back.  
+  && sudo systemctl --now enable docker` and [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) and docker-compose `sudo apt  install docker-compose`. Add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Than log out and log back.  
 3. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
    Extract the file and copy the folders to `./data` .
 4. set `VIDEO_INPUT` in `*path to repository*/docker/.ènv` to your webcam device (defaults to /dev/video0).  
