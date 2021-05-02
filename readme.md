@@ -74,6 +74,7 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
 2. For cartoon style
    transfer: `docker-compose -f *pahh to repository*/docker/docker-compose-nvidia.yml  run cartoonizecam`
 3. The new webcam device is `/dev/video12`.
+   Test it with `fflpay /dev/video12`.
 
 ### How to stop the webcam:
 
