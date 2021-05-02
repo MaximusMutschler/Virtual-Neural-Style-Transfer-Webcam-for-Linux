@@ -57,8 +57,8 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
    transfer with a resolution of 1280x720
 2. Install [Docker](https://docs.docker.com/engine/install/ubuntu/) `curl https://get.docker.com | sh \
   && sudo systemctl --now enable docker`  
-  [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)  
-  docker-compose `sudo apt  install docker-compose`.   
+  Install [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)  
+  Install docker-compose `sudo apt  install docker-compose`.   
   Add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Than log out and log back.  
 3. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
    Extract the file and copy the folders to `./data` .
