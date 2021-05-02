@@ -73,7 +73,7 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
 
 1. change to docker dir `cd *path to repository*/docker/`   
 2. For artistic style transfer: `docker-compose -f docker-compose-nvidia.yml  run stylecam`  
-    You might have to run it twice when it does not find '/dev/video13'.  
+    You might have to run it twice when it does not find `/dev/video13`.  
 4. For cartoon style
    transfer: `docker-compose -f docker/docker-compose-nvidia.yml  run cartoonizecam`
 5. The new webcam device is `/dev/video12`.
