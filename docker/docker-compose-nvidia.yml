@@ -17,17 +17,17 @@ services:
             #- /dev/console:/dev/console  # TODO those two are at least needed for pynput to work, but which else?
         runtime: nvidia
         volumes:
-            - ../data/cartoonize_models:/stylecam/data/cartoonize_models
-            - ../data/style_transfer_models:/stylecam/data/style_transfer_models
-            #- /tmp/.X11-unix:/tmp/.X11-unix
+            - ${CARTOONIZE_MODELS_PATH}:/stylecam/data/cartoonize_models
+            - ${STYLE_TRANSFER_MODEl_PATH}:/stylecam/data/style_transfer_models
         environment:
             - DISPLAY=${DISPLAY}
             - PYNPUT_BACKEND_MOUSE=dummy
             - PYNPUT_BACKEND_KEYBOARD=uinput
 
         network_mode: host
-        #entrypoint: python3 -u ./src/main.py
+
         entrypoint: /stylecam/entryscript.sh
+        #entrypoint: /bin/bash
 
 
     cartoonizecam:
