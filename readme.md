@@ -64,7 +64,8 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
    Extract the file and copy the folders to `./data` .
 4. set `VIDEO_INPUT` in `*path to repository*/docker/.ènv` to your webcam device (defaults to /dev/video0).  
    Use `v4l2-ctl --list-devices` to find your device.
-5. run `docker-compose -f *path to repository*/docker/docker-compose-nvidia.yml build
+5. change to docker dir `cd *path to repository*/docker/`
+   run `docker-compose -f docker-compose-nvidia.yml build`
    `
 
 ### How to start the webcam:
