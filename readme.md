@@ -66,15 +66,17 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
    Use `v4l2-ctl --list-devices` to find your device.
 5. change to docker dir `cd *path to repository*/docker/`  
    run `docker-compose -f docker-compose-nvidia.yml build`
+6. create empty video device: `sudo touch /dev/video13`
    `
 
 ### How to start the webcam:
 
 1. change to docker dir `cd *path to repository*/docker/`   
-2. For artistic style transfer: `docker-compose -f docker-compose-nvidia.yml  run stylecam`
-3. For cartoon style
+2. For artistic style transfer: `docker-compose -f docker-compose-nvidia.yml  run stylecam`  
+    You might have to run it twice when it does not find '/dev/video13'.  
+4. For cartoon style
    transfer: `docker-compose -f docker/docker-compose-nvidia.yml  run cartoonizecam`
-4. The new webcam device is `/dev/video12`.
+5. The new webcam device is `/dev/video12`.
    Test it with `fflpay /dev/video12`.
 
 ### How to stop the webcam:
