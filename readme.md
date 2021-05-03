@@ -62,7 +62,7 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
 
 ## Installation and Starting with Docker:
 
-### Requirements and Installation when using Docker:
+### Requirements and Installation if using Docker:
 
 1. Have a good *nvidia* graphics card. Best not older than 2 years.  
    With a Geforce 2080TI I could achieve 12 fps for the artistic style transfer and 16 fps for the cartoon style
