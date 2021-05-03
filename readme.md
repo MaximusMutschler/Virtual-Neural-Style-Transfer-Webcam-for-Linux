@@ -9,8 +9,22 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
 also be used.
 
 *Only tested with ubuntu 18.04 so far.
-
-<img src="media/style1.gif" alt="style1" width="150%">
+ <table style="width:100%">
+  <tr>
+    <td><img src="media/style4.gif" alt="style4" width="100%"</td>
+    <td><img src="media/style7.gif" alt="style7" width="100%"</td>
+    <td><img src="media/style3.gif" alt="style3" width="100%"</td>
+  </tr>
+    <td><img src="media/style10.gif" alt="style10" width="100%"</td>
+    <td><img src="media/style9.gif" alt="style9" width="100%"</td>
+    <td><img src="media/style6.gif" alt="style6" width="100%"</td>
+  </tr>
+    </tr>
+    <td><img src="media/style2.gif" alt="style2" width="100%"</td>
+    <td><img src="media/style8.gif" alt="style8" width="100%"</td>
+    <td><img src="media/style4.gif" alt="style4" width="100%"</td>
+  </tr>
+</table> 
 
 ## Source and Acknowledgement
 
