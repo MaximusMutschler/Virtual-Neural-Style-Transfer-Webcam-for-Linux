@@ -73,7 +73,7 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
   Install [docker-compose](https://docs.docker.com/compose/install/) `sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose`.   
   Add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Than log out and log back.  
 3. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
-   Extract the file and copy the folders to `./data` .
+   Extract the file and copy the folders `cartoonize_models` and `style_transfer_models` to `./data` .
 4. set `VIDEO_INPUT` in `*path to repository*/docker/.ènv` to your webcam device (defaults to /dev/video0).  
    Use `v4l2-ctl --list-devices` to find your device.
 5. change to docker dir `cd *path to repository*/docker/`  
