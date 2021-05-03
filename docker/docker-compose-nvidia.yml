@@ -12,7 +12,7 @@ services:
         shm_size: ${SHM_SIZE}
         devices:
             - ${VIDEO_INPUT}:/dev/video0
-            #- ${VIDEO_OUTPUT}:/dev/video3
+            #- /dev/video13:/dev/video13
             #- /dev/uinput:/dev/uinput
             #- /dev/console:/dev/console  # TODO those two are at least needed for pynput to work, but which else?
         runtime: nvidia
@@ -55,5 +55,5 @@ services:
 
         network_mode: host
 
-        #command: [cartoonize]
+        command: [cartoonize]
         entrypoint: /stylecam/entryscript.sh

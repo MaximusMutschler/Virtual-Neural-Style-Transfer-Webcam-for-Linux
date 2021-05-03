@@ -1,5 +1,6 @@
 #!/bin/bash
 echo Loaded Entry Script
+rmmod /lib/modules/$(uname -r)/updates/dkms/akvcam.ko
 insmod /lib/modules/$(uname -r)/updates/dkms/akvcam.ko
 if [ "$1" == "cartoonize" ]
 then
