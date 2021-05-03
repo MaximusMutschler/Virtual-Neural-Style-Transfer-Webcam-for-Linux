@@ -22,7 +22,7 @@ also be used.
     </tr>
     <td><img src="media/style2.gif" alt="style2" width="100%"</td>
     <td><img src="media/style8.gif" alt="style8" width="100%"</td>
-    <td><img src="media/style4.gif" alt="style4" width="100%"</td>
+    <td><img src="media/style5.gif" alt="style4" width="100%"</td>
   </tr>
 </table> 
 
