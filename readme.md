@@ -2,11 +2,11 @@
 Ever wanted to have cool and unique filters for your video call? You found it!  
 This repository provides you a virtual linux webcam* which applies
 a [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style) or
-a [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization) to your webcam video.  
-Own styles trained with the code provided
+a [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization) to your webcam video. Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization/tree/master/train_code)  can
-also be used.
+also be used.  
+Note that a strong nvidia graphics card is used to run this somoothly.
 
 *Only tested with Ubuntu 18.04 so far.
  <table style="width:100%">
