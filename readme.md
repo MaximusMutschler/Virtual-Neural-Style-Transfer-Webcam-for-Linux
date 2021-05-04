@@ -6,7 +6,7 @@ a [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartooni
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization/tree/master/train_code)  can
 also be used.  
-Note that a strong nvidia graphics card is used to run this somoothly.
+Note that a strong nvidia graphics card is used to run this smoothly.
 
 *Only tested with Ubuntu 18.04 so far.
  <table style="width:100%">
