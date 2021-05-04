@@ -8,7 +8,7 @@ by [artistic neural style transfer](https://github.com/pytorch/examples/tree/mas
 or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization/tree/master/train_code)  can
 also be used.
 
-*Only tested with ubuntu 18.04 so far.
+*Only tested with Ubuntu 18.04 so far.
  <table style="width:100%">
   <tr>
     <td><img src="media/style4.gif" alt="style4" width="100%"</td>
