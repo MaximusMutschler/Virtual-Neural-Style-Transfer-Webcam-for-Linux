@@ -35,7 +35,7 @@ Leon Gatys et. al. and the Pytorch
 team [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)  
 Xinrui Wang et.al. ant the Tensorflow
 team   [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization)   
-Many thanks for their contributions.
+Many thanks for your contributions.
 
 ## How to change and adapt styles:
 
@@ -44,7 +44,7 @@ The program can iterate over all styles provided in the artistic style tansfer m
 transfer model dir (-c) and in corresponding subdirs.    
 Press CTRL-2 to load the previous style  
 Press CTRL-3 to load the next style  
-Some style models achieve better results if the styled image is smaller or larger. This does not change the video output
+Some style models achieve better results if the image to style is smaller or larger. This does not change the video output
 size.    
 Press CTRL-4 to decrease the scale factor of the model input  
 Press CTRL-5 to increase the scale factor of the model input   
@@ -72,16 +72,16 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
   Add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Then log out and log back.  
 3. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
    Extract the file and copy the folders `cartoonize_models` and `style_transfer_models` to `*path to repository*/data` .
-4. set `VIDEO_INPUT` in `*path to repository*/docker/.ènv` to your webcam device (defaults to /dev/video0).  
+4. Set `VIDEO_INPUT` in `*path to repository*/docker/.ènv` to your webcam device (defaults to /dev/video0).  
    Use `v4l2-ctl --list-devices` to find your device.
-5. change to docker dir `cd *path to repository*/docker/`  
+5. Change to docker dir `cd *path to repository*/docker/`  
    run `docker-compose -f docker-compose-nvidia.yml build`
 
    `
 
 ### How to start the webcam:
 
-1. change to docker dir `cd *path to repository*/docker/`   
+1. Change to docker dir `cd *path to repository*/docker/`   
 2. For artistic style transfer: `docker-compose -f docker-compose-nvidia.yml  run stylecam`  
    You might have to start it a second time when it does not find `/dev/video13`.  
 4. For cartoon style
@@ -91,8 +91,8 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
 
 ### How to stop the webcam:
 
-1. stop the face program with `strg c`
-2. if your real webcam input is now very slow just restart the system. (I'm working on a better solution.)
+1. Stop the face program with `strg c`
+2. If your real webcam input is now very slow just restart the system. (I'm working on a better solution.)
 
 ## Installation and Starting without  Docker:
 
