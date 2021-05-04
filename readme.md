@@ -48,14 +48,12 @@ Some style models achieve better results if the styled image is smaller or large
 size.    
 Press CTRL-4 to decrease the scale factor of the model input  
 Press CTRL-5 to increase the scale factor of the model input   
-Please CTRL-c to exit
+Press CTRL-c to exit
 
 ## How to add new styles
 
-Put additional artistic style tansfer models in the directory provided with the -s flag (defaults to
-./data/style_transfer_models)  
-Put additional cartoon style tansfer models in the directory provided with the -c flag (defaults to
-./data/cartoonize_models)  
+Put additional artistic style tansfer models into `*path to repository*/data/style_transfer_models`
+Put additional cartoon style tansfer models into `*path to repository*/data/cartoonize_models` 
 You can train own styles with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization/tree/master/train_code).
@@ -71,9 +69,9 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
   && sudo systemctl --now enable docker`  
   Install [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)  
   Install [docker-compose](https://docs.docker.com/compose/install/) `sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose`.   
-  Add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Than log out and log back.  
+  Add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Then log out and log back.  
 3. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
-   Extract the file and copy the folders `cartoonize_models` and `style_transfer_models` to `./data` .
+   Extract the file and copy the folders `cartoonize_models` and `style_transfer_models` to `*path to repository*/data` .
 4. set `VIDEO_INPUT` in `*path to repository*/docker/.ènv` to your webcam device (defaults to /dev/video0).  
    Use `v4l2-ctl --list-devices` to find your device.
 5. change to docker dir `cd *path to repository*/docker/`  
