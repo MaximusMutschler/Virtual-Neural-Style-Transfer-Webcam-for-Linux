@@ -70,7 +70,7 @@ class Cartoonizer():
 #             load_path = os.path.join(load_folder, name)
 #             save_path = os.path.join(save_folder, name)
 #             image = cv2.imread(load_path)
-#             image = resize_crop(image)
+#             image = _resize_crop(image)
 #             batch_image = image.astype(np.float32)/127.5 - 1
 #             batch_image = np.expand_dims(batch_image, axis=0)
 #             output = sess.run(final_out, feed_dict={input_photo: batch_image})

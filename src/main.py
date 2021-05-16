@@ -1,3 +1,7 @@
+
+import os
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+
 import signal
 import sys
 from argparse import ArgumentParser
@@ -6,6 +10,14 @@ from functools import partial
 import pynput.keyboard as keyboard
 
 from fakecam import FakeCam
+
+# TODO make deepfake version https://www.youtube.com/watch?v=mUfJOQKdtAk
+# Todo make git develop branch
+# todo load all styles at beginning
+# todo clean up
+# todo set default scale to 0.5
+# todo make FPS one line
+# todo build tensorrt docker container ( get rid of cartoon style transfer)
 
 
 def parse_args():
@@ -22,7 +34,7 @@ def parse_args():
                         help="Set real webcam codec")
     parser.add_argument("-S", "--scale-factor", default=1.0, type=float,
                         help="Scale factor of the image sent the neural network")
-    parser.add_argument("-w", "--webcam-path", default="/dev/video0",
+    parser.add_argument("-w", "--webcam-path", default="/dev/video2",
                         help="Set real webcam path")
     parser.add_argument("-v", "--akvcam-path", default="/dev/video13",
                         help="virtual akvcam output device path")
@@ -81,6 +93,7 @@ def main():
     print("exit 0")
 
     sys.exit(0)
+
 
 
 

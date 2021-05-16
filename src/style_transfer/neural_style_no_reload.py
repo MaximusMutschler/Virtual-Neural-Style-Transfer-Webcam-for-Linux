@@ -7,10 +7,9 @@ import torch
 import torch.onnx
 from torchvision import transforms
 import pycuda.driver as cuda
-import pycuda.autoinit #important for tensorrt to work
+import pycuda.autoinit
 import numpy as np
 import tensorrt as trt
-import gc
 
 from style_transfer.transformer_net import TransformerNet
 
@@ -24,31 +23,23 @@ class StyleTransfer():
         self.style_model_weights_path = style_model_path
         self.default_input_shape=[1,3,*cam_resolution]
         self.style_model = TransformerNet()
+        self.state_dict = torch.load(self.style_model_weights_path)
+        # remove saved deprecated running_* keys in InstanceNorm from the checkpoint
+        for k in list(self.state_dict.keys()):
+            if re.search(r'in\d+\.running_(mean|var)$', k):
+                del self.state_dict[k]
+        self.style_model.load_state_dict(self.state_dict)
         #self.style_model.to(device)
-
-        self._create_tensorrt_network_and_config()
-        self.trt_context=None
-        self.trt_engine=None
-        self.load_model(style_model_path)
-        self._load_model_internal()
-        self.is_new_model = False
-
-
-
+        #TODO if not already there
+        onnx_model_path="./test.onnx"
+        self._save_model_to_onnx(self.style_model,path=onnx_model_path)
         #self.onnx_session= onnxruntime.InferenceSession(onnx_model_path)
 
-        #self.tensorrt_engine, self.tesorrt_context = self._build_engine(onnx_model_path)
+        self.tensorrt_engine, self.tesorrt_context = self._build_engine(onnx_model_path)
+
     def load_model(self,style_model_path):
-        self.is_new_model=True
-        self.style_model_weights_path=style_model_path
-
-    def _load_model_internal(self):
-        # this only works if called form the main thread!
-        del self.trt_engine
-        del self.trt_context
-        gc.collect()
         # load model weights
-
+        self.style_model_weights_path = style_model_path
         self.state_dict = torch.load(self.style_model_weights_path)
         for k in list(self.state_dict.keys()):
             if re.search(r'in\d+\.running_(mean|var)$', k):
@@ -58,70 +49,30 @@ class StyleTransfer():
         # optimize
         basepath= "".join(self.style_model_weights_path.split(".")[:-1])
 
-        onnx_path = "."+ basepath + ".onnx"
-        trt_engine_path ="."+ basepath + ".trtengine"
-        EXPLICIT_BATCH = 1 << (int)(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
-        trt_network = self.trt_builder.create_network(EXPLICIT_BATCH)
-        if not (os.path.isfile(onnx_path) and os.path.isfile(trt_engine_path)):
-
-            print("optimizing", self.style_model_weights_path)
-            self._save_model_to_onnx(self.style_model,path=onnx_path)
-            parser = trt.OnnxParser(trt_network, TRT_LOGGER)
-            with open(onnx_path, 'rb') as model:
-                print('Beginning ONNX file parsing')
-                if not parser.parse(model.read()):
-                    for error in range(parser.num_errors):
-                        print(parser.get_error(error))
-            print('Completed parsing of ONNX file')
-            print('Building an tensorrt engine. This might take some time...')
-            engine = self.trt_builder.build_engine(trt_network, self.trt_config)
-            context = engine.create_execution_context()
-            print("Completed creating Engine")
-            print("saving engine to ", trt_engine_path)
-            with open(trt_engine_path, "wb") as f:
-                f.write(engine.serialize())
-
-            #with open(trt_engine_path, "rb") as f, trt.Runtime(TRT_LOGGER) as runtime:
-            #        engine = runtime.deserialize_cuda_engine(f.read())
-
-#            runtime = trt.Runtime(TRT_LOGGER)
-            # serialized_engine=engine.serialize()
-            # engine = runtime.deserialize_cuda_engine(serialized_engine)
-        else:
-            # this has to be done otherwise deserialize_cuda_engine does not work
-            parser = trt.OnnxParser(trt_network, TRT_LOGGER)
-            with open(onnx_path, 'rb') as model:
-                print('Beginning ONNX file parsing')
-                if not parser.parse(model.read()):
-                    for error in range(parser.num_errors):
-                        print(parser.get_error(error))
-            with open(trt_engine_path, "rb") as f, trt.Runtime(TRT_LOGGER) as runtime:
-                    engine = runtime.deserialize_cuda_engine(f.read())
-            context = engine.create_execution_context()
+        if not os.path.isfile(basepath+".onnx") and os.path.isfile(basepath+".tntengine"):
+            print("optimizing", style_model_path)
 
 
-        self.trt_engine = engine
-        self.trt_context = context
-        self.is_new_model=False
 
+        #.tntengine and .onnx
 
 
 
 
     def __del__(self):
-        del self.trt_engine
-        del self.trt_context
+        del self.tensorrt_engine
+        del self.tesorrt_context
 
 
     @staticmethod
     def _to_numpy(tensor):
         return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
 
-
-    def _save_model_to_onnx(self,model,example_input=None,path="./test.onnx"):
+    @staticmethod
+    def _save_model_to_onnx(model,example_input=None,path="./test.onnx"):
 
         if example_input==None:
-            example_input=torch.ones(*self.default_input_shape) # TODO bind memory to gpu for onnx : https://github.com/microsoft/onnxruntime/issues/2750
+            example_input=torch.ones(1,3,720,1280) # TODO bind memory to gpu for onnx : https://github.com/microsoft/onnxruntime/issues/2750
         torch.onnx.export(
             model,  ## pass model
             (example_input),  ## pass inpout example
@@ -139,7 +90,6 @@ class StyleTransfer():
         )
         onnx_model = onnx.load(path)
         onnx.checker.check_model(onnx_model)
-        print("saved model onnx to: ", path)
 
 
 
@@ -157,11 +107,31 @@ class StyleTransfer():
         image = image[:h, :w, :]
         return image
 
+    def _build_engine(self, onnx_file_path):
 
-    def _create_tensorrt_network_and_config(self):
-
+        # initialize TensorRT engine and parse ONNX model
+        #builder = trt.Builder(self.TRT_LOGGER)
+        # allow TensorRT to use up to 1GB of GPU memory for tactic selection
+        #builder.max_workspace_size = 1 << 30
+        EXPLICIT_BATCH = 1 << (int)(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
         builder = trt.Builder(TRT_LOGGER)
+        network =  builder.create_network(EXPLICIT_BATCH)
+        parser=  trt.OnnxParser(
+                network, TRT_LOGGER)
+
+        with open(onnx_file_path, 'rb') as model:
+            print('Beginning ONNX file parsing')
+            if not parser.parse(model.read()):
+                for error in range(parser.num_errors):
+                    print(parser.get_error(error))
+        print('Completed parsing of ONNX file')
         config = builder.create_builder_config()
+        config.max_workspace_size = 8*2**30#1 << 20  # This determines the amount of memory available to the builder when building an optimized engine and should generally be set as high as possible.
+        # TODO has to be set automatically to gpu mem size *0.9
+
+
+        # dynamic shape
+        #network.add_input("test", trt.float32,(1, 3, -1, -1))
         profile = builder.create_optimization_profile()
         shape= np.array(self.default_input_shape)
         dynamic_dim=shape[2:4]
@@ -176,81 +146,33 @@ class StyleTransfer():
         profile.set_shape("input", min_shape,optimization_shape,max_shape)
         profile.set_shape("output", min_shape,optimization_shape,max_shape)
         config.add_optimization_profile(profile)
-        self.trt_config = config
 
-        self.trt_builder= builder
+       # with open(“sample.engine”, “rb”) as f, trt.Runtime(TRT_LOGGER) as runtime:
+       #     engine = runtime.deserialize_cuda_engine(f.read())
 
-    #
-    # def _build_engine(self, onnx_file_path):
-    #
-    #     # initialize TensorRT engine and parse ONNX model
-    #     #builder = trt.Builder(self.TRT_LOGGER)
-    #     # allow TensorRT to use up to 1GB of GPU memory for tactic selection
-    #     #builder.max_workspace_size = 1 << 30
-    #     EXPLICIT_BATCH = 1 << (int)(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
-    #     builder = trt.Builder(TRT_LOGGER)
-    #     network =  builder.create_network(EXPLICIT_BATCH)
-    #     parser =  trt.OnnxParser(
-    #             network, TRT_LOGGER)
-    #
-    #     with open(onnx_file_path, 'rb') as model:
-    #         print('Beginning ONNX file parsing')
-    #         if not parser.parse(model.read()):
-    #             for error in range(parser.num_errors):
-    #                 print(parser.get_error(error))
-    #     print('Completed parsing of ONNX file')
-    #     config = builder.create_builder_config()
-    #     config.max_workspace_size = 8*2**30#1 << 20  # This determines the amount of memory available to the builder when building an optimized engine and should generally be set as high as possible.
-    #     # TODO has to be set automatically to gpu mem size *0.9
-    #
-    #
-    #     # dynamic shape
-    #     #network.add_input("test", trt.float32,(1, 3, -1, -1))
-    #     profile = builder.create_optimization_profile()
-    #     shape= np.array(self.default_input_shape)
-    #     dynamic_dim=shape[2:4]
-    #     fix_dim=shape[0:2]
-    #     min=0.1# Todo
-    #     max=1.6
-    #     min_shape = np.array([*fix_dim,*(dynamic_dim*min)]).astype(int)
-    #     max_shape = np.array([*fix_dim,*(dynamic_dim*max)]).astype(int)
-    #     optimization_shape = np.array(self.default_input_shape).astype(int)
-    #     #shapes=[np.array([*fix_dim,*(dynamic_dim * i)]).astype(int) for i in np.arange(0.1, 1.6, 0.1)]# TODO only min and max dim
-    #     # https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#work_dynamic_shapes
-    #     profile.set_shape("input", min_shape,optimization_shape,max_shape)
-    #     profile.set_shape("output", min_shape,optimization_shape,max_shape)
-    #     config.add_optimization_profile(profile)
-    #
-    #    # with open(“sample.engine”, “rb”) as f, trt.Runtime(TRT_LOGGER) as runtime:
-    #    #     engine = runtime.deserialize_cuda_engine(f.read())
-    #
-    #     #last_layer = network.get_layer(network.num_layers - 1)
-    #     #network.mark_output(last_layer.get_output(0))
-    #
-    #     # generate TensorRT engine optimized for the target platform
-    #     # we have only one image in batch
-    #
-    #     # use FP16 mode if possible
-    #     #if builder.platform_has_fast_fp16:
-    #      #   builder.fp16_mode = True
-    #     #trt.BuilderFlag.FP16
-    #
-    #     #add_optimization_profile check this function for dynamig input
-    #
-    #
-    #     print('Building an engine...')
-    #     engine = builder.build_engine(network,config)
-    #     context = engine.create_execution_context()
-    #     print("Completed creating Engine")
-    #     del builder
-    #
-    #     return engine, context
+        #last_layer = network.get_layer(network.num_layers - 1)
+        #network.mark_output(last_layer.get_output(0))
+
+        # generate TensorRT engine optimized for the target platform
+        # we have only one image in batch
+
+        # use FP16 mode if possible
+        #if builder.platform_has_fast_fp16:
+         #   builder.fp16_mode = True
+        #trt.BuilderFlag.FP16
+
+        #add_optimization_profile check this function for dynamig input
+
+
+        print('Building an engine...')
+        engine = builder.build_engine(network,config)
+        context = engine.create_execution_context()
+        print("Completed creating Engine")
+        del builder
+
+        return engine, context
 
     def stylize(self, frame):
-        if self.is_new_model:
-            self._load_model_internal()
-
-
         content_image = self._resize_crop(frame)
         content_image = content_image.astype(np.float32)  # / 127.5 - 1
         content_transform = transforms.Compose([
@@ -267,29 +189,20 @@ class StyleTransfer():
 
         #onnx_inputs = {self.onnx_session.get_inputs()[0].name: (content_image)}
         #oonnx_outs = self.onnx_session.run(None, onnx_inputs)
-        #cuda.init()
-        #device = cuda.Device(0)
-        #ctx = device.make_context()
-        #ctx.push()
-        #models=['./data/style_transfer_models/blue_mosaic.model','./data/style_transfer_models/blue_wood.model']
-        #random= np.random.randint(0,2)
-        #self.load_model(models[random]) # this works thus the problem is the other thread!
-        #self.load_model('./data/style_transfer_models/blue_wood.model')
-        engine= self.trt_engine
-        context= self.trt_context
+        engine= self.tensorrt_engine
         stream = cuda.Stream()
-        context.set_optimization_profile_async(0, stream.handle)
+        self.tesorrt_context.set_optimization_profile_async(0, stream.handle)
         for i ,binding in enumerate(engine):
             if engine.binding_is_input(i):  # we expect only one input
-                context.set_binding_shape(i,content_image.shape)
+                self.tesorrt_context.set_binding_shape(i,content_image.shape)
                 input_shape_engine = engine.get_binding_shape(binding) # This has dynamic shapes
-                input_shape = context.get_binding_shape(i)# this has correct shapes
+                input_shape = self.tesorrt_context.get_binding_shape(i)# this has correct shapes
                 input_size = trt.volume(input_shape) * engine.max_batch_size * np.dtype(np.float32).itemsize  # in bytes
                 device_input = cuda.mem_alloc(input_size)
             else:  # and one output
                 #self.tesorrt_context.set_binding_shape(i, content_image.shape)
                 output_shape_engine = engine.get_binding_shape(binding)
-                output_shape = context.get_binding_shape(i)
+                output_shape = self.tesorrt_context.get_binding_shape(i)
                 # create page-locked memory buffers (i.e. won't be swapped to disk)
                 host_output = cuda.pagelocked_empty(trt.volume(output_shape) * engine.max_batch_size, dtype=np.float32)
                 device_output = cuda.mem_alloc(host_output.nbytes)
@@ -315,7 +228,7 @@ class StyleTransfer():
         #engine.get_binding_index()
 
 
-        context.execute_async_v2(bindings=[int(device_input), int(device_output)], stream_handle=stream.handle)
+        self.tesorrt_context.execute_async_v2(bindings=[int(device_input), int(device_output)], stream_handle=stream.handle)
 
         # Transfer predictions back from the GPU.
         cuda.memcpy_dtoh_async(host_output, device_output, stream)
@@ -325,9 +238,6 @@ class StyleTransfer():
         #TODO https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#python_topics
         # https://learnopencv.com/how-to-convert-a-model-from-pytorch-to-tensorrt-and-speed-up-inference/
         output_data = np.array(host_output).reshape(engine.max_batch_size, *output_shape[1:])
-
-        #ctx.pop()
-        #del ctx
 
         output = np.squeeze(output_data)
         output = np.moveaxis(output, 0, 2)

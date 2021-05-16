@@ -42,6 +42,7 @@ class FakeCam:
         self.is_stop = False
         self.styler = None
         self.set_style_number(self.style_number)
+        self.is_styling=True
 
     def check_webcam_existing(self, path):
         if not os.path.exists(path):
@@ -62,7 +63,7 @@ class FakeCam:
     def run(self):
         self.real_cam.start()
         t0 = time.monotonic()
-        print_fps_period = 1
+        print_fps_period = 1.0
         frame_count = 0
         while not self.is_stop:
             current_frame = self.real_cam.read()
@@ -70,20 +71,24 @@ class FakeCam:
                 time.sleep(0.1)
                 continue
             current_frame = cv2.resize(current_frame, (0, 0), fx=self.scale_factor, fy=self.scale_factor)
-            if self.styler is not None:
-                try:
-                    # frame_buffer=frame_buffer
-                    # current_frame = self.cartoonizer.cartoonize_frame([current_frame])[0] # todo higher batch size does not help
-                    current_frame = self.styler.stylize(current_frame)
-                except Exception  as e:
-                    print("error during style transfer", e)
-                    pass
+
+            with self.styler_lock:
+
+                if self.is_styling:
+                    try:
+                        # frame_buffer=frame_buffer
+                        # current_frame = self.cartoonizer.cartoonize_frame([current_frame])[0] # todo higher batch size does not help
+                        current_frame = self.styler.stylize(current_frame)
+                    except Exception  as e:
+                        print("error during style transfer", e)
+                        pass
             self.put_frame(current_frame)
             frame_count += 1
             td = time.monotonic() - t0
+            #print(td)
             if td > print_fps_period:
                 self.current_fps = frame_count / td
-                print("FPS: {:6.2f}".format(self.current_fps), end="\r")
+                print("FPS: {:6.2f}".format(self.current_fps))#, end="\r")
                 frame_count = 0
                 t0 = time.monotonic()
         print("stopped fake cam")
@@ -103,10 +108,7 @@ class FakeCam:
         list_of_paths.sort()
         return list_of_paths
 
-    #
-    # def scale_scale_factor(self,factor=1.1):
-    #     with self.scale_factor_lock:
-    #         self.scale_factor*=factor
+
 
     def add_to_scale_factor(self, addend=0.1):
         proposed_scale_factor = round(self.scale_factor + addend, 1)
@@ -153,19 +155,32 @@ class FakeCam:
                 else:
                     from style_transfer.neural_style import StyleTransfer
                     with self.styler_lock:
-                        self.styler = StyleTransfer(style_model_path=model_path)
+                        if self.styler is None:
+                            self.styler= StyleTransfer(model_path)
+                        else:
+                            self.styler.load_model(model_path)
+
                 self.style_number = number
                 print("model changed to:", model_path)
             except Exception as e:
-                print("style model could not be changed".format(number), e)
+                #print("style model could not be changed".format(number), e)
+                raise e
         else:
             print("model with number {} does not exist".format(number))
 
     def switch_is_styling(self):
-        if self.styler is None:
-            self.set_style_number(self.style_number)
-        else:
-            self.styler=None
-            print("disabled styling")
+        with self.styler_lock:
+            if self.is_styling == False:
+                self.is_styling = True
+            else:
+                self.is_styling = False
+
+    ####speed test style transfer:
+    # gpu pytorch  11.6
+    # gpu onnx     ca 3.0 FAIL!!! TODO now try TensorRT
+    # gpu tensorrt 16.8
+    # cpu pytorch  0.45 fps
+    # cpu onnx     0.75 fps
+
 
 
