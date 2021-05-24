@@ -1,9 +1,3 @@
-#*.idea
-#*__pycache__*
-#data/**
-#tensorRT/**
-#!data/readme.txt
-
 
 # Ignore everything
 *

@@ -12,13 +12,9 @@ import pynput.keyboard as keyboard
 from fakecam import FakeCam
 
 # TODO make deepfake version https://www.youtube.com/watch?v=mUfJOQKdtAk
-# Todo make git develop branch
-# todo load all styles at beginning
 # todo clean up
-# todo set default scale to 0.5
-# todo make FPS one line
 # todo build tensorrt docker container ( get rid of cartoon style transfer)
-
+# todo suppress all pixel changes smaller than c
 
 def parse_args():
     parser = ArgumentParser(description="Applying stylees to your web cam image under \
@@ -32,9 +28,9 @@ def parse_args():
                         help="Set real webcam FPS")
     parser.add_argument("-C", "--codec", default='MJPG', type=str,
                         help="Set real webcam codec")
-    parser.add_argument("-S", "--scale-factor", default=1.0, type=float,
+    parser.add_argument("-S", "--scale-factor", default=0.7, type=float,
                         help="Scale factor of the image sent the neural network")
-    parser.add_argument("-w", "--webcam-path", default="/dev/video2",
+    parser.add_argument("-w", "--webcam-path", default="/dev/video0",
                         help="Set real webcam path")
     parser.add_argument("-v", "--akvcam-path", default="/dev/video13",
                         help="virtual akvcam output device path")

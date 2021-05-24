@@ -6,6 +6,7 @@ import cv2
 
 from akvcam import AkvCameraWriter
 from realcam import RealCam
+from style_transfer.neural_style import StyleTransfer
 
 
 class FakeCam:
@@ -43,6 +44,7 @@ class FakeCam:
         self.styler = None
         self.set_style_number(self.style_number)
         self.is_styling=True
+        self.optimize_models()
 
     def check_webcam_existing(self, path):
         if not os.path.exists(path):
@@ -88,7 +90,7 @@ class FakeCam:
             #print(td)
             if td > print_fps_period:
                 self.current_fps = frame_count / td
-                print("FPS: {:6.2f}".format(self.current_fps))#, end="\r")
+                print("FPS: {:6.2f}".format(self.current_fps), end="\r")
                 frame_count = 0
                 t0 = time.monotonic()
         print("stopped fake cam")
@@ -139,6 +141,15 @@ class FakeCam:
             number -= 1
         self.set_style_number(number, model_paths)
 
+    def optimize_models(self):
+        print("-"*50)
+        print("optimizing models for your graphics card, this might take several minutes for the first time.")
+        print("-"*50)
+        model_paths = self._get_list_of_all_models(self.model_dir)
+        for model_path in model_paths:
+            self.styler.optimize_model(model_path)
+
+
     def set_style_number(self, number, model_paths=None):
         if model_paths == None:
             model_paths = self._get_list_of_all_models(self.model_dir)
@@ -148,18 +159,11 @@ class FakeCam:
         if number < len(model_paths) and number > -1:
             model_path = self._get_list_of_all_models(self.model_dir)[number]
             try:
-                if self.is_cartoonize:
-                    from white_box_cartoonization.cartoonize import Cartoonizer
-                    with self.styler_lock:
-                        self.styler = Cartoonizer(model_path=model_path)
-                else:
-                    from style_transfer.neural_style import StyleTransfer
-                    with self.styler_lock:
-                        if self.styler is None:
-                            self.styler= StyleTransfer(model_path)
-                        else:
-                            self.styler.load_model(model_path)
-
+                with self.styler_lock:
+                    if self.styler is None:
+                        self.styler= StyleTransfer(model_path)
+                    else:
+                        self.styler.load_model(model_path)
                 self.style_number = number
                 print("model changed to:", model_path)
             except Exception as e:
@@ -178,7 +182,7 @@ class FakeCam:
     ####speed test style transfer:
     # gpu pytorch  11.6
     # gpu onnx     ca 3.0 FAIL!!! TODO now try TensorRT
-    # gpu tensorrt 16.8
+    # gpu tensorrt 16.8 with float16: 22
     # cpu pytorch  0.45 fps
     # cpu onnx     0.75 fps
 
