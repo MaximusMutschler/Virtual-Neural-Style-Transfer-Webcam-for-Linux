@@ -26,8 +26,8 @@ class TransformerNet(torch.nn.Module):
         # Non-linearities
         self.relu = torch.nn.ReLU()
 
-    def forward(self, X):
-        y = self.relu(self.in1(self.conv1(X)))
+    def forward(self, x):
+        y = self.relu(self.in1(self.conv1(x)))
         y = self.relu(self.in2(self.conv2(y)))
         y = self.relu(self.in3(self.conv3(y)))
         y = self.res1(y)
@@ -46,8 +46,8 @@ class ConvLayer(torch.nn.Module):
         super(ConvLayer, self).__init__()
         reflection_padding = kernel_size // 2
 
-        #self.reflection_pad = torch.nn.ReflectionPad2d(reflection_padding) # Not supported by tensorrt
-        self.reflection_pad=torch.nn.ZeroPad2d(reflection_padding)
+        # self.reflection_pad = torch.nn.ReflectionPad2d(reflection_padding) # Not supported by tensorrt
+        self.reflection_pad = torch.nn.ZeroPad2d(reflection_padding)
         self.conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride)
 
     def forward(self, x):
@@ -89,7 +89,7 @@ class UpsampleConvLayer(torch.nn.Module):
         super(UpsampleConvLayer, self).__init__()
         self.upsample = upsample
         reflection_padding = kernel_size // 2
-        #self.reflection_pad = torch.nn.ReflectionPad2d(reflection_padding)
+        # self.reflection_pad = torch.nn.ReflectionPad2d(reflection_padding)
         self.reflection_pad = torch.nn.ZeroPad2d(reflection_padding)
         self.conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride)
 

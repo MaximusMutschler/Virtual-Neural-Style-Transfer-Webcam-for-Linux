@@ -1,6 +1,9 @@
-torch==1.6.0
+torch~=1.8.1
 tensorflow-gpu==1.15
-opencv-python==4.2.0.32
-torchvision==0.7.0
-numpy==1.18.5
+opencv-python~=4.5.1.48
+torchvision~=0.9.1
+numpy~=1.19.5
 pynput==1.7.3
+onnx~=1.9.0
+pycuda~=2021.1
+tensorrt~=8.0.0.3

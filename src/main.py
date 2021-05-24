@@ -1,6 +1,6 @@
-
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import signal
 import sys
@@ -11,8 +11,8 @@ import pynput.keyboard as keyboard
 
 from fakecam import FakeCam
 
+
 # TODO make deepfake version https://www.youtube.com/watch?v=mUfJOQKdtAk
-# todo clean up
 # todo build tensorrt docker container ( get rid of cartoon style transfer)
 # todo suppress all pixel changes smaller than c
 
@@ -44,7 +44,6 @@ def parse_args():
     return parser.parse_args()
 
 
-
 def main():
     args = parse_args()
     cam = FakeCam(
@@ -60,19 +59,18 @@ def main():
         style_model_dir=args.style_model_dir,
     )
 
-    def sig_interrupt_handler(signal, frame, cam):
+    def sig_interrupt_handler(signal_, frame_, cam_):
         print("Stopping fake cam process")
-        cam.stop()
+        cam_.stop()
 
-
-    signal.signal(signal.SIGINT, partial(sig_interrupt_handler,cam=cam))
+    signal.signal(signal.SIGINT, partial(sig_interrupt_handler, cam=cam))
 
     keyboard.GlobalHotKeys({
         '<ctrl>+1': cam.switch_is_styling,
         '<ctrl>+2': cam.set_previous_style,
         '<ctrl>+3': cam.set_next_style,
-        '<ctrl>+4': partial(cam.add_to_scale_factor,-0.1),
-        '<ctrl>+5': partial(cam.add_to_scale_factor,0.1),
+        '<ctrl>+4': partial(cam.add_to_scale_factor, -0.1),
+        '<ctrl>+5': partial(cam.add_to_scale_factor, 0.1),
     }).start()
 
     # keyboard.KeyboardListener(on_press=on_press).start()
@@ -89,8 +87,6 @@ def main():
     print("exit 0")
 
     sys.exit(0)
-
-
 
 
 if __name__ == "__main__":
