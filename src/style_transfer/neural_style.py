@@ -28,8 +28,6 @@ class StyleTransfer:
         self.style_model_weights_path = style_model_path
         self.default_input_shape = [1, 3, *cam_resolution]
         self.style_model = TransformerNet()
-        # self.style_model.to(device)
-
         self._create_tensorrt_network_and_config()
         self.trt_context = None
         self.trt_engine = None
@@ -37,9 +35,6 @@ class StyleTransfer:
         self._load_model_internal()
         self.is_new_model = False
 
-        # self.onnx_session= onnxruntime.InferenceSession(onnx_model_path)
-
-        # self.tensorrt_engine, self.tesorrt_context = self._build_engine(onnx_model_path)
 
     def load_model(self, style_model_path):
         self.is_new_model = True
@@ -60,15 +55,11 @@ class StyleTransfer:
         self._save_model_to_onnx(style_model, path=onnx_path)
         parser = trt.OnnxParser(trt_network, TRT_LOGGER)
         with open(onnx_path, 'rb') as model:
-            # print('Beginning ONNX file parsing')
             if not parser.parse(model.read()):
                 for error in range(parser.num_errors):
                     print(parser.get_error(error))
-        # print('Completed parsing of ONNX file')
-        # print('Building an tensorrt engine. This might take some time...')
         engine = self.trt_builder.build_engine(trt_network, self.trt_config)
         context = engine.create_execution_context()
-        # print("Completed creating Engine")
         print("saving tensorrt engine to ", trt_engine_path)
         with open(trt_engine_path, "wb") as f:
             f.write(engine.serialize())
@@ -87,9 +78,7 @@ class StyleTransfer:
         del self.trt_engine
         del self.trt_context
         gc.collect()
-        # load model weights
         self._load_weights_into_model(self.style_model_weights_path, self.style_model)
-
         # optimize
         base_path = "".join(self.style_model_weights_path.split(".")[:-1])
 
@@ -104,7 +93,6 @@ class StyleTransfer:
             # this has to be done otherwise deserialize_cuda_engine does not work
             parser = trt.OnnxParser(trt_network, TRT_LOGGER)
             with open(onnx_path, 'rb') as model:
-                # print('Beginning ONNX file parsing')
                 if not parser.parse(model.read()):
                     for error in range(parser.num_errors):
                         print(parser.get_error(error))
@@ -192,7 +180,6 @@ class StyleTransfer:
         content_image = content_image.astype(np.float32)  # / 127.5 - 1
         content_transform = transforms.Compose([
             transforms.ToTensor(),
-            # transforms.Lambda(lambda x: x.mul(255))
         ])
         content_image = content_transform(content_image).unsqueeze(0)
 
@@ -201,18 +188,12 @@ class StyleTransfer:
         stream = cuda.Stream()
         context.set_optimization_profile_async(0, stream.handle)
 
-        # for i ,binding in enumerate(engine):
-        # if engine.binding_is_input(i):  # we expect only one input
         context.set_binding_shape(0, content_image.shape)
-        # input_shape_engine = engine.get_binding_shape(binding) # This has dynamic shapes
-        input_shape = context.get_binding_shape(0)  # this has correct shapes
-        input_size = trt.volume(input_shape) * engine.max_batch_size * np.dtype(np.float32).itemsize  # in bytes
+        input_shape = context.get_binding_shape(0)
+        input_size = trt.volume(input_shape) * engine.max_batch_size * np.dtype(np.float32).itemsize
         device_input = cuda.mem_alloc(input_size)
 
-        # self.tesorrt_context.set_binding_shape(i, content_image.shape)
-        # output_shape_engine = engine.get_binding_shape(binding)
         output_shape = context.get_binding_shape(1)
-        # create page-locked memory buffers (i.e. won't be swapped to disk)
         host_output = cuda.pagelocked_empty(trt.volume(output_shape) * engine.max_batch_size, dtype=np.float32)
         device_output = cuda.mem_alloc(host_output.nbytes)
 
@@ -221,8 +202,6 @@ class StyleTransfer:
         # Transfer input data to the GPU.
         cuda.memcpy_htod_async(device_input, host_input, stream)
         # Run inference.
-        # engine.get_binding_index()
-
         context.execute_async_v2(bindings=[int(device_input), int(device_output)], stream_handle=stream.handle)
 
         # Transfer predictions back from the GPU.

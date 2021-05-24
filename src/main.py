@@ -34,13 +34,8 @@ def parse_args():
                         help="Set real webcam path")
     parser.add_argument("-v", "--akvcam-path", default="/dev/video13",
                         help="virtual akvcam output device path")
-    parser.add_argument("--cartoonize", action="store_true",
-                        help="use cartoon style transfer from https://github.com/SystemErrorWang/White-box-Cartoonization")
     parser.add_argument("-s", "--style-model-dir", default="./data/style_transfer_models",
                         help="Folder which (subfolders) contains saved style transfer networks. Have to end with '.model' or '.pth'. Own styles created with https://github.com/pytorch/examples/tree/master/fast_neural_style can be used.")
-    parser.add_argument("-c", "--cartoonize-model-dir", default="./data/cartoonize_models",
-                        help="Folder which (subfolders) contains saved cartoonize networks. A .index file has to exist for each checkpoint.  Own styles created with https://github.com/SystemErrorWang/White-box-Cartoonization can be used.")
-
     return parser.parse_args()
 
 
@@ -54,8 +49,6 @@ def main():
         scale_factor=args.scale_factor,
         webcam_path=args.webcam_path,
         akvcam_path=args.akvcam_path,
-        is_cartoonize=args.cartoonize,
-        cartoonize_model_dir=args.cartoonize_model_dir,
         style_model_dir=args.style_model_dir,
     )
 
@@ -66,20 +59,20 @@ def main():
     signal.signal(signal.SIGINT, partial(sig_interrupt_handler, cam=cam))
 
     keyboard.GlobalHotKeys({
-        '<ctrl>+1': cam.switch_is_styling,
-        '<ctrl>+2': cam.set_previous_style,
-        '<ctrl>+3': cam.set_next_style,
-        '<ctrl>+4': partial(cam.add_to_scale_factor, -0.1),
-        '<ctrl>+5': partial(cam.add_to_scale_factor, 0.1),
+        '<ctrl>+<alt>+1': cam.switch_is_styling,
+        '<ctrl>+<alt>+2': cam.set_previous_style,
+        '<ctrl>+<alt>+3': cam.set_next_style,
+        '<ctrl>+<alt>+4': partial(cam.add_to_scale_factor, -0.1),
+        '<ctrl>+<alt>+5': partial(cam.add_to_scale_factor, 0.1),
     }).start()
 
     # keyboard.KeyboardListener(on_press=on_press).start()
     print("Running...")
-    print("Press CTRL-1 to deactivate and activate styling")
-    print("Press CTRL-2 to load the previous style")
-    print("Press CTRL-3 to load the next style")
-    print("Press CTRL-4 to decrease the scale factor of the model input")
-    print("Press CTRL-5 to increase the scale factor of the model input")
+    print("Press CTRL+ALT+1 to deactivate and activate styling")
+    print("Press CTRL+ALT+2 to load the previous style")
+    print("Press CTRL+ALT+3 to load the next style")
+    print("Press CTRL+ALT+4 to decrease the scale factor of the model input")
+    print("Press CTRL+ALT+5 to increase the scale factor of the model input")
     print("Please CTRL-c to exit")
 
     cam.run()  # loops

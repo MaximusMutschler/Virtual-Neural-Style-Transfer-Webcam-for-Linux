@@ -19,8 +19,6 @@ class FakeCam:
             scale_factor: float,
             webcam_path: str,
             akvcam_path: str,
-            is_cartoonize: bool,
-            cartoonize_model_dir: str,
             style_model_dir: str,
     ) -> None:
         self.check_webcam_existing(webcam_path)
@@ -32,11 +30,7 @@ class FakeCam:
         self.height = self.real_cam.get_frame_height()
         self.fake_cam_writer = AkvCameraWriter(akvcam_path, self.width, self.height)
         self.style_number = 0
-        self.is_cartoonize = is_cartoonize
-        if self.is_cartoonize:
-            self.model_dir = cartoonize_model_dir
-        else:
-            self.model_dir = style_model_dir
+        self.model_dir = style_model_dir
         self.styler_lock = threading.Lock()
         self.scale_factor_lock = threading.Lock()
         self.stop_lock = threading.Lock()
@@ -77,9 +71,6 @@ class FakeCam:
 
                 if self.is_styling:
                     try:
-                        # frame_buffer=frame_buffer
-                        # current_frame = self.cartoonizer.cartoonize_frame([current_frame])[0]
-                        # larger batch size does not help
                         current_frame = self.styler.stylize(current_frame)
                     except Exception as e:
                         print("error during style transfer", e)
