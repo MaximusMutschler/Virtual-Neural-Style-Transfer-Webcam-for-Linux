@@ -1,5 +1,4 @@
 torch~=1.8.1
-tensorflow-gpu==1.15
 opencv-python~=4.5.1.48
 torchvision~=0.9.1
 numpy~=1.19.5

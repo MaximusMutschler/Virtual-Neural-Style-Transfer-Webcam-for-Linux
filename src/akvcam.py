@@ -63,7 +63,6 @@ class AkvCameraWriter:
         self.queue.put(image_)
 
     def __del__(self):
-        self.queue.put(None)
         os.close(self.d)
 
 

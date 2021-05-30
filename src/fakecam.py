@@ -3,6 +3,7 @@ import threading
 import time
 
 import cv2
+import numpy as np
 
 from akvcam import AkvCameraWriter
 from realcam import RealCam
@@ -40,6 +41,8 @@ class FakeCam:
         self.is_styling = True
         self.optimize_models()
         self.current_fps = 0
+        self.last_frame = None
+        self.noise_epsilon = 10
 
     @staticmethod
     def check_webcam_existing(path):
@@ -70,6 +73,7 @@ class FakeCam:
             with self.styler_lock:
 
                 if self.is_styling:
+                    current_frame = self._supress_noise(current_frame)
                     try:
                         current_frame = self.styler.stylize(current_frame)
                     except Exception as e:
@@ -87,6 +91,13 @@ class FakeCam:
         print("stopped fake cam")
         self.real_cam.stop()
         self.fake_cam_writer.stop()
+
+    def _supress_noise(self, current_frame):
+        if self.last_frame is not None:
+            delta = np.abs(self.last_frame - current_frame) <= self.noise_epsilon
+            current_frame[delta] = self.last_frame[delta]
+        self.last_frame = current_frame
+        return current_frame
 
     def _get_list_of_all_models(self, model_dir, file_endings=[".index", ".pth", ".model"]):
         list_of_paths = []
@@ -132,7 +143,7 @@ class FakeCam:
 
     def optimize_models(self):
         print("-" * 50)
-        print("optimizing models for your graphics card, this might take several minutes for the first time.")
+        print("optimizing models for your graphics card. This might take several minutes for the first time.")
         print("-" * 50)
         model_paths = self._get_list_of_all_models(self.model_dir)
         for model_path in model_paths:

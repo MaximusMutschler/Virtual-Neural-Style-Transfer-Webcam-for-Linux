@@ -15,7 +15,7 @@ from torchvision import transforms
 
 from style_transfer.transformer_net import TransformerNet
 
-TRT_LOGGER = trt.Logger(min_severity=trt.Logger.ERROR)
+TRT_LOGGER = trt.Logger(min_severity=trt.Logger.WARNING)
 EXPLICIT_BATCH = 1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
 
 
@@ -59,6 +59,9 @@ class StyleTransfer:
                 for error in range(parser.num_errors):
                     print(parser.get_error(error))
         engine = self.trt_builder.build_engine(trt_network, self.trt_config)
+        if engine is None:
+            raise Exception("engine is none")
+
         context = engine.create_execution_context()
         print("saving tensorrt engine to ", trt_engine_path)
         with open(trt_engine_path, "wb") as f:
@@ -86,7 +89,7 @@ class StyleTransfer:
         trt_engine_path = "." + base_path + ".trtengine"
         trt_network = self.trt_builder.create_network(EXPLICIT_BATCH)
         if not (os.path.isfile(onnx_path) and os.path.isfile(trt_engine_path)):
-            print("optimizing model to your graphics card, this might take some time.")
+            print("optimizing model for your graphics card. This might take some time.")
             engine, context = self._optimize_model_internal(self.style_model, self.style_model_weights_path, onnx_path,
                                                             trt_engine_path, trt_network)
         else:
