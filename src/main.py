@@ -53,6 +53,8 @@ def main():
     print("Enter 3+BACKSPACE to load the next style")
     print("Enter 4+BACKSPACE to decrease the scale factor of the model input")
     print("Enter 5+BACKSPACE to increase the scale factor of the model input")
+    print("Enter 6+BACKSPACE to decrease the noise suppression factor")
+    print("Enter 7+BACKSPACE to increase the noise suppression factor")
     print("Please CTRL-c to exit")
 
     def listen_for_input():
