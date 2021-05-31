@@ -39,7 +39,7 @@ class AkvCameraWriter:
             try:
                 elem = self.queue.get(timeout=1)
             except:
-                # print("akvcam waited longer as 1 second for a frame. Continuing.") TODO
+                # print("akvcam waited longer as 1 second for a frame. Continuing.")
                 continue
             if elem is None:
                 error = "input queue for akvcam was empty"
@@ -59,12 +59,10 @@ class AkvCameraWriter:
         os.close(self.d)
         print("stopped fake cam writer")
 
-
-    def schedule_frame(self, image):
-        self.queue.put(image)
+    def schedule_frame(self, image_):
+        self.queue.put(image_)
 
     def __del__(self):
-        self.queue.put(None)
         os.close(self.d)
 
 

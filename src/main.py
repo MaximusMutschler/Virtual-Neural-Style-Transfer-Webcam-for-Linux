@@ -1,12 +1,12 @@
+import os
+import time
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import signal
 import sys
 from argparse import ArgumentParser
 from functools import partial
-
-import pynput.keyboard as keyboard
-
+import threading
 from fakecam import FakeCam
-
 
 def parse_args():
     parser = ArgumentParser(description="Applying stylees to your web cam image under \
@@ -20,21 +20,17 @@ def parse_args():
                         help="Set real webcam FPS")
     parser.add_argument("-C", "--codec", default='MJPG', type=str,
                         help="Set real webcam codec")
-    parser.add_argument("-S", "--scale-factor", default=1.0, type=float,
+    parser.add_argument("-S", "--scale-factor", default=0.7, type=float,
                         help="Scale factor of the image sent the neural network")
     parser.add_argument("-w", "--webcam-path", default="/dev/video0",
                         help="Set real webcam path")
     parser.add_argument("-v", "--akvcam-path", default="/dev/video13",
                         help="virtual akvcam output device path")
-    parser.add_argument("--cartoonize", action="store_true",
-                        help="use cartoon style transfer from https://github.com/SystemErrorWang/White-box-Cartoonization")
-    parser.add_argument("-s", "--style-model-dir", default="./data/style_transfer_models",
+    parser.add_argument("-s", "--style-model-dir", default="./data/style_transfer_models_bu",
                         help="Folder which (subfolders) contains saved style transfer networks. Have to end with '.model' or '.pth'. Own styles created with https://github.com/pytorch/examples/tree/master/fast_neural_style can be used.")
-    parser.add_argument("-c", "--cartoonize-model-dir", default="./data/cartoonize_models",
-                        help="Folder which (subfolders) contains saved cartoonize networks. A .index file has to exist for each checkpoint.  Own styles created with https://github.com/SystemErrorWang/White-box-Cartoonization can be used.")
-
+    parser.add_argument("-n", "--noise-suppressing", default=25.0, type=float,
+                        help="higher values reduce noise introduced by the style transfer but might lead to skewed human faces")
     return parser.parse_args()
-
 
 
 def main():
@@ -47,34 +43,48 @@ def main():
         scale_factor=args.scale_factor,
         webcam_path=args.webcam_path,
         akvcam_path=args.akvcam_path,
-        is_cartoonize=args.cartoonize,
-        cartoonize_model_dir=args.cartoonize_model_dir,
         style_model_dir=args.style_model_dir,
+        noise_suppressing_factor=args.noise_suppressing,
     )
 
-    def sig_interrupt_handler(signal, frame, cam):
-        print("Stopping fake cam process")
-        cam.stop()
-
-
-    signal.signal(signal.SIGINT, partial(sig_interrupt_handler,cam=cam))
-
-    keyboard.GlobalHotKeys({
-        '<ctrl>+1': cam.switch_is_styling,
-        '<ctrl>+2': cam.set_previous_style,
-        '<ctrl>+3': cam.set_next_style,
-        '<ctrl>+4': partial(cam.add_to_scale_factor,-0.1),
-        '<ctrl>+5': partial(cam.add_to_scale_factor,0.1),
-    }).start()
-
-    # keyboard.KeyboardListener(on_press=on_press).start()
     print("Running...")
-    print("Press CTRL-1 to deactivate and activate styling")
-    print("Press CTRL-2 to load the previous style")
-    print("Press CTRL-3 to load the next style")
-    print("Press CTRL-4 to decrease the scale factor of the model input")
-    print("Press CTRL-5 to increase the scale factor of the model input")
+    print("Enter 1+BACKSPACE to deactivate and activate styling")
+    print("Enter 2+BACKSPACE to load the previous style")
+    print("Enter 3+BACKSPACE to load the next style")
+    print("Enter 4+BACKSPACE to decrease the scale factor of the model input")
+    print("Enter 5+BACKSPACE to increase the scale factor of the model input")
     print("Please CTRL-c to exit")
+
+    def listen_for_input():
+        t = threading.currentThread()
+        while True:
+            input_ = input()
+            if input_ == "1":
+                cam.switch_is_styling()
+            elif input_ == "2":
+                cam.set_previous_style()
+            elif input_ == "3":
+                cam.set_next_style()
+            elif input_ == "4":
+                cam.add_to_scale_factor(-0.1)
+            elif input_ == "5":
+                cam.add_to_scale_factor(0.1)
+            elif input_ == "6":
+                cam.add_to_noise_factor(-5)
+            elif input_ == "7":
+                cam.add_to_noise_factor(5)
+            else:
+                print("input {} was not recognized".format(input_))
+            time.sleep(1)
+
+    listen_thread = threading.Thread(target=listen_for_input, daemon=True)
+    listen_thread.start()
+
+    def sig_interrupt_handler(signal_, frame_, cam_):
+        print("Stopping fake cam process")
+        cam_.stop()
+
+    signal.signal(signal.SIGINT, partial(sig_interrupt_handler, cam_=cam))
 
     cam.run()  # loops
 
@@ -83,6 +93,7 @@ def main():
     sys.exit(0)
 
 
-
 if __name__ == "__main__":
     main()
+
+# TODO make deepfake version https://www.youtube.com/watch?v=mUfJOQKdtAk

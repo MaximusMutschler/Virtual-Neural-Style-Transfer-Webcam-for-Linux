@@ -1,0 +1,15 @@
+
+# Ignore everything
+*
+# But descend into directories
+!*/
+# Recursively allow files under subtree
+!/src/**
+!/media/**
+!/akvcam_config/*
+!/docker/**
+# You can be specific with these rules
+!data/readme.txt
+!.gitignore
+!readme.md
+!requirements.txt

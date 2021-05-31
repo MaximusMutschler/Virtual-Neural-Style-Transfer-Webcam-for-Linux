@@ -1,12 +1,13 @@
 # Virtual Neural Style Transfer Webcam for Linux
 Ever wanted to have cool and unique filters for your video call? You found it!  
 This repository provides you a virtual linux webcam* which applies
-a [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style) or
-a [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization) to your webcam video. Own styles trained with the code provided
+
+a [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style) to your webcam
+video.  
+Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
-or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization/tree/master/train_code)  can
-also be used.  
-Note that a strong nvidia graphics card is needed to run this smoothly.
+can be used, too.
+
 
 *Only tested with Ubuntu 18.04 so far.
  <table style="width:100%">
@@ -31,7 +32,8 @@ Note that a strong nvidia graphics card is needed to run this smoothly.
 This work builds upon:  
 hipersayanX [akvcam](https://github.com/webcamoid/akvcam)    
 fangfufu  [Linux-Fake-Background-Webcam](https://github.com/fangfufu/Linux-Fake-Background-Webcam)  
-Leon Gatys et. al. and the Pytorch
+[Leon Gatys et. al.](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf)
+, [Justin Johnson et. al.](https://arxiv.org/pdf/1603.08155.pdf) and the Pytorch
 team [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)  
 Xinrui Wang et.al. ant the Tensorflow
 team   [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization)   
@@ -39,55 +41,59 @@ Many thanks for your contributions.
 
 ## How to change and adapt styles:
 
-Press CTRL-1 to deactivate and activate styling  
-The program can iterate over all styles provided in the artistic style tansfer model dir (-s) or the cartoon style
-transfer model dir (-c) and in corresponding subdirs.    
-Press CTRL-2 to load the previous style  
-Press CTRL-3 to load the next style  
-Some style models achieve better results if the image to style is smaller or larger. This does not change the video output
+
+Enter 1+BACKSPACE to deactivate and activate styling  
+The program can iterate over all styles provided in the artistic style tansfer model dir (-s) and in corresponding
+subdirs.    
+Enter 2+BACKSPACE to load the previous style  
+Enter 3+BACKSPACE to load the next style  
+Some style models achieve better results if the styled image is smaller or larger. This does not change the video output
 size.    
-Press CTRL-4 to decrease the scale factor of the model input  
-Press CTRL-5 to increase the scale factor of the model input   
+Enter 4+BACKSPACE to decrease the scale factor of the model input. This will increase the frame rate.  
+Enter 5+BACKSPACE to increase the scale factor of the model input This will decrease the frame rate.  
+Enter 6+BACKSPACE to decrease the noise suppression factor. This might lead to annoying noise.  
+Enter 7+BACKSPACE to increase the noise suppression factor. This might lead to blurred faces.  
 Press CTRL-c to exit
 
 ## How to add new styles
 
-Put additional artistic style tansfer models into `*path to repository*/data/style_transfer_models`
-Put additional cartoon style tansfer models into `*path to repository*/data/cartoonize_models` 
+
+Put additional artistic style tansfer models in the directory provided with the -s flag (defaults to
+./data/style_transfer_models)
 You can train own styles with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
-or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization/tree/master/train_code).
 
 ## Installation and Starting with Docker:
 
 ### Requirements and Installation if using Docker:
 
-1. Have a good *nvidia* graphics card. Best not older than 2 years.  
-   With a Geforce 2080TI I could achieve 12 fps for the artistic style transfer and 16 fps for the cartoon style
-   transfer with a resolution of 1280x720
-2. Install [Docker](https://docs.docker.com/engine/install/ubuntu/) `curl https://get.docker.com | sh 
-  && sudo systemctl --now enable docker`  
-  Install [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)  
-  Install [docker-compose](https://docs.docker.com/compose/install/) `sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose`.   
-  Add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Then log out and log back.  
-3. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
-   Extract the file and copy the folders `cartoonize_models` and `style_transfer_models` to `*path to repository*/data` .
-4. Set `VIDEO_INPUT` in `*path to repository*/docker/.ènv` to your webcam device (defaults to /dev/video0).  
-   Use `v4l2-ctl --list-devices` to find your device.
-5. Change to docker dir `cd *path to repository*/docker/`  
-   run `docker-compose -f docker-compose-nvidia.yml build`
+1. Have a good *nvidia* graphics card and driver of version larger than 465.31 installed.  
+   With a Geforce 2080TI I could achieve 24 fps for the artistic style transfer with a resolution of 1280x720.
+2.
+Install [Docker](https://docs.docker.com/engine/install/ubuntu/) `curl https://get.docker.com | sh && sudo systemctl --now enable docker`  
+Install [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)  
+Install [docker-compose](https://docs.docker.com/compose/install/) `sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose`
+.   
+Add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Than log out and log
+back.
 
-   `
+3. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
+   Extract the file and copy the folder`style_transfer_models` to `./data` .
+4. set `VIDEO_INPUT` in `.docker/docker_compose_nvidia.yml` to your webcam device (defaults to /dev/video0).  
+   Use `v4l2-ctl --list-devices` to find your device. Consider also to adapt the environment variables in this file.
+5. change to docker dir `cd *path to repository*/docker/`  
+   run `docker-compose -f docker-compose-nvidia.yml build`
 
 ### How to start the webcam:
 
-1. Change to docker dir `cd *path to repository*/docker/`   
+
+1. change to docker dir `cd *path to repository*/docker/`
 2. For artistic style transfer: `docker-compose -f docker-compose-nvidia.yml  run stylecam`  
    You might have to start it a second time when it does not find `/dev/video13`.  
-4. For cartoon style
-   transfer: `docker-compose -f docker/docker-compose-nvidia.yml  run cartoonizecam`
-5. The new webcam device is `/dev/video12`.
-   Test it with `fflpay /dev/video12`.
+   Starting the program the first time will take several minutes, since the networks are optimized to your gpu.   
+   If you encounter an out of memory error during this optimization, just restart. If you encounter an error concerning
+   permissions for /dev/video12 or /dev/video13 run `sudo chmod 777 /dev/video1*`
+3. The new webcam device is `/dev/video12`. Test it with `fflpay /dev/video12`.
 
 ### How to stop the webcam:
 
@@ -109,14 +115,12 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
    scipt)  
    The akvcam capture device is now located at `/dev/video2` (This is the one you have to choose in the software that
    displays your webcam video )
-3. Have a good graphics card. With a Geforce 2080TI we could achieve 12 fps for the artistic style tansfer and 16 fps
-   for the cartoon style transfer with a resolution of 1280x720
-4. Install the cuda libraries. I have [cuda 10.0](https://developer.nvidia.com/cuda-10.0-download-archive) installed.
-5. Install python packages given in the requirements.txt.  
-   torch 1.6.0 is only needed for the artistic style transfer. Newer versions will probably work as well.  
-   tensorflow 1.15 is only needed for the cartoon style transfer. Tensorflow 2.* is not supported!  
-   The other requirements are: opencv-python==4.2.0.32, torchvision==0.7.0, numpy==1.18.2.
-
+3. Have a good graphics card with driver version >465.31 installed. With a Geforce 2080TI we could achieve 24 fps for
+   the artistic style tansfer a with a resolution of 1280x720
+4. Install the cuda libraries with version >= [cuda 11.0](https://developer.nvidia.com/cuda-11.0-download-archive)
+   installed.
+5. Install tensorrt python wheels with version > 8.0.0.3
+5. Install python packages given in the requirements.txt.
 8. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
    Extract the file and copy the folders to `./data` .
 
@@ -127,8 +131,7 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
    `sudo insmod /lib/modules/$(uname -r)/updates/dkms/akvcam.ko`
 
 3. run the facecam program:  
-   `python3 src/main.py --cartoonize -w /dev/video1 -v /dev/video3`  
-   Remove `-cartoonize` to apply artistic style transfer.  
+   `python3 src/main.py -w /dev/video1 -v /dev/video3`
    -w is the path to the real webcam device (you might have to adapt this one).  
    -v is the path to the virtual akvcam output device.  
    use --help to see further options.
@@ -142,8 +145,21 @@ or  [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoo
 
 ## License
 
-Copyright (C) Maximus Mutschler All rights reserved. Licensed under the CC BY-NC-SA 4.0  
-license (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).  
-Commercial application is prohibited, please remain this license if you clone this repo . 
+    Virtual Neural Style Transfer Webcam for Linux 
+    Copyright (C) 2021 Maximus Mutschler
 
-    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+
