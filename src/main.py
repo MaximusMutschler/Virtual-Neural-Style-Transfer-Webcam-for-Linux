@@ -59,19 +59,19 @@ def main():
         t = threading.currentThread()
         while True:
             input_ = input()
-            if input_ is "1":
+            if input_ == "1":
                 cam.switch_is_styling()
-            elif input_ is "2":
+            elif input_ == "2":
                 cam.set_previous_style()
-            elif input_ is "3":
+            elif input_ == "3":
                 cam.set_next_style()
-            elif input_ is "4":
+            elif input_ == "4":
                 cam.add_to_scale_factor(-0.1)
-            elif input_ is "5":
+            elif input_ == "5":
                 cam.add_to_scale_factor(0.1)
-            elif input_ is "6":
+            elif input_ == "6":
                 cam.add_to_noise_factor(-5)
-            elif input_ is "7":
+            elif input_ == "7":
                 cam.add_to_noise_factor(5)
             else:
                 print("input {} was not recognized".format(input_))

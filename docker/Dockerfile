@@ -16,8 +16,6 @@ RUN apt update
 RUN apt -y install dkms
 RUN apt -y install git
 RUN DEBIAN_FRONTEND=noninteractive apt install -y tzdata
-RUN apt -y install linux-headers-generic
-
 
 RUN apt update && \
     apt install -y --no-install-recommends \
@@ -25,8 +23,6 @@ RUN apt update && \
       python3-opencv \
       build-essential \
       && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
-RUN apt-get update &&  DEBIAN_FRONTEND=noninteractive apt-get install -y libudev-dev kbd console-data kmod
-
 
 RUN pip install --upgrade pip
 RUN pip install torch==1.8.1
@@ -51,7 +47,4 @@ RUN cp akvcam_config/* /etc/akvcam/
 RUN pip uninstall pycuda --yes
 RUN pip install pycuda==2021.1
 
-#CMD insmod /lib/modules/$(uname -r)/updates/dkms/akvcam.ko
-
-#ENTRYPOINT ["python3", "-u", "./src/main.py"]
 

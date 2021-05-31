@@ -15,7 +15,7 @@ from torchvision import transforms
 
 from style_transfer.transformer_net import TransformerNet
 
-TRT_LOGGER = trt.Logger(min_severity=trt.Logger.WARNING)
+TRT_LOGGER = trt.Logger(min_severity=trt.Logger.ERROR)
 EXPLICIT_BATCH = 1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
 
 

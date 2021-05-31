@@ -50,7 +50,7 @@ Enter 4+BACKSPACE to decrease the scale factor of the model input. This will inc
 Enter 5+BACKSPACE to increase the scale factor of the model input This will decrease the frame rate.  
 Enter 6+BACKSPACE to decrease the noise suppression factor. This might lead to annoying noise.  
 Enter 7+BACKSPACE to increase the noise suppression factor. This might lead to blurred faces.  
-Please CTRL-c to exit
+Press CTRL-c to exit
 
 ## How to add new styles
 
@@ -86,8 +86,9 @@ back.
 1. change to docker dir `cd *path to repository*/docker/`
 2. For artistic style transfer: `docker-compose -f docker-compose-nvidia.yml  run stylecam`  
    You might have to start it a second time when it does not find `/dev/video13`.  
-   Starting the program the first time will take some time, since the networks are optimized to your gpu.  
-   If you encounter an error concerning permissions for /dev/video12 or /dev/video13 run `sudo chmod 777 /dev/video1*`
+   Starting the program the first time will take several minutes, since the networks are optimized to your gpu.   
+   If you encounter an out of memory error during this optimization, just restart. If you encounter an error concerning
+   permissions for /dev/video12 or /dev/video13 run `sudo chmod 777 /dev/video1*`
 3. The new webcam device is `/dev/video12`. Test it with `fflpay /dev/video12`.
 
 ### How to stop the webcam:
@@ -140,17 +141,21 @@ back.
 
 ## License
 
-`Virtual Neural Style Transfer Webcam for Linux Copyright (C) 2021 Maximus Mutschler
+    Virtual Neural Style Transfer Webcam for Linux 
+    Copyright (C) 2021 Maximus Mutschler
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
-License as published by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this program. If not,
-see <https://www.gnu.org/licenses/>.`
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
 
