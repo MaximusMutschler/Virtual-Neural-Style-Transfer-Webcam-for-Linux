@@ -6,5 +6,5 @@ chmod 777 /dev/video0
 chmod 777 /dev/video12
 chmod 777 /dev/video13
 
-python3 -u ./src/main.py
+python3 -u ./src/main.py -s $STYLE_TRANSFER_MODEl_PATH -S $STYLE_SCALE_FACTOR -n $NOISE_SUPRESSING_FACTOR
 

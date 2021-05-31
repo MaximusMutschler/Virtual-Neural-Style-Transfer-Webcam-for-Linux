@@ -39,15 +39,18 @@ Many thanks for their contributions.
 
 ## How to change and adapt styles:
 
-Press CTRL-ALT-1 to deactivate and activate styling  
+Enter 1+BACKSPACE to deactivate and activate styling  
 The program can iterate over all styles provided in the artistic style tansfer model dir (-s) and in corresponding
 subdirs.    
-Press CTRL-ALT-2 to load the previous style  
-Press CTRL-ALT-3 to load the next style  
+Enter 2+BACKSPACE to load the previous style  
+Enter 3+BACKSPACE to load the next style  
 Some style models achieve better results if the styled image is smaller or larger. This does not change the video output
 size.    
-Press CTRL-ALT-4 to decrease the scale factor of the model input. This will increase the frame rate. Press CTRL-ALT-5 to
-increase the scale factor of the model input This will decrease the frame rate. Please CTRL-c to exit
+Enter 4+BACKSPACE to decrease the scale factor of the model input. This will increase the frame rate.  
+Enter 5+BACKSPACE to increase the scale factor of the model input This will decrease the frame rate.  
+Enter 6+BACKSPACE to decrease the noise suppression factor. This might lead to annoying noise.  
+Enter 7+BACKSPACE to increase the noise suppression factor. This might lead to blurred faces.  
+Please CTRL-c to exit
 
 ## How to add new styles
 
@@ -61,7 +64,7 @@ by [artistic neural style transfer](https://github.com/pytorch/examples/tree/mas
 
 ### Requirements and Installation if using Docker:
 
-1. Have a good *nvidia* graphics card and driver of version larger than 456.31 installed.  
+1. Have a good *nvidia* graphics card and driver of version larger than 465.31 installed.  
    With a Geforce 2080TI I could achieve 24 fps for the artistic style transfer with a resolution of 1280x720.
 2.
 Install [Docker](https://docs.docker.com/engine/install/ubuntu/) `curl https://get.docker.com | sh && sudo systemctl --now enable docker`  
@@ -70,20 +73,21 @@ Install [docker-compose](https://docs.docker.com/compose/install/) `sudo curl -L
 .   
 Add your current user to the docker group: `sudo groupadd docker && usermod -aG docker $USER`. Than log out and log
 back.
+
 3. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
    Extract the file and copy the folder`style_transfer_models` to `./data` .
-4. set `VIDEO_INPUT` in `*path to repository*/docker/.ènv` to your webcam device (defaults to /dev/video0).  
-   Use `v4l2-ctl --list-devices` to find your device.
+4. set `VIDEO_INPUT` in `.docker/docker_compose_nvidia.yml` to your webcam device (defaults to /dev/video0).  
+   Use `v4l2-ctl --list-devices` to find your device. Consider also to adapt the environment variables in this file.
 5. change to docker dir `cd *path to repository*/docker/`  
    run `docker-compose -f docker-compose-nvidia.yml build`
-
-   `
 
 ### How to start the webcam:
 
 1. change to docker dir `cd *path to repository*/docker/`
 2. For artistic style transfer: `docker-compose -f docker-compose-nvidia.yml  run stylecam`  
-   You might have to start it a second time when it does not find `/dev/video13`.
+   You might have to start it a second time when it does not find `/dev/video13`.  
+   Starting the program the first time will take some time, since the networks are optimized to your gpu.  
+   If you encounter an error concerning permissions for /dev/video12 or /dev/video13 run `sudo chmod 777 /dev/video1*`
 3. The new webcam device is `/dev/video12`. Test it with `fflpay /dev/video12`.
 
 ### How to stop the webcam:
@@ -106,15 +110,12 @@ back.
    scipt)  
    The akvcam capture device is now located at `/dev/video2` (This is the one you have to choose in the software that
    displays your webcam video )
-3. Have a good graphics card. With a Geforce 2080TI we could achieve 24 fps for the artistic style tansfer a with a
-   resolution of 1280x720 TODO continue
+3. Have a good graphics card with driver version >465.31 installed. With a Geforce 2080TI we could achieve 24 fps for
+   the artistic style tansfer a with a resolution of 1280x720
 4. Install the cuda libraries with version >= [cuda 11.0](https://developer.nvidia.com/cuda-11.0-download-archive)
    installed.
 5. Install tensorrt python wheels with version > 8.0.0.3
-5. Install python packages given in the requirements.txt.  
-   torch 1.8.1 is only needed for the artistic style transfer. The other requirements are: opencv-python==4.2.0.32,
-   torchvision==0.7.0, numpy==1.18.2.
-
+5. Install python packages given in the requirements.txt.
 8. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
    Extract the file and copy the folders to `./data` .
 
@@ -125,8 +126,7 @@ back.
    `sudo insmod /lib/modules/$(uname -r)/updates/dkms/akvcam.ko`
 
 3. run the facecam program:  
-   `python3 src/main.py --cartoonize -w /dev/video1 -v /dev/video3`  
-   Remove `-cartoonize` to apply artistic style transfer.  
+   `python3 src/main.py -w /dev/video1 -v /dev/video3`
    -w is the path to the real webcam device (you might have to adapt this one).  
    -v is the path to the virtual akvcam output device.  
    use --help to see further options.
@@ -140,8 +140,17 @@ back.
 
 ## License
 
-Copyright (C) Maximus Mutschler All rights reserved. Licensed under the CC BY-NC-SA 4.0  
-license (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).  
-Commercial application is prohibited, please remain this license if you clone this repo . 
+`Virtual Neural Style Transfer Webcam for Linux Copyright (C) 2021 Maximus Mutschler
 
-    
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not,
+see <https://www.gnu.org/licenses/>.`
+
+
+

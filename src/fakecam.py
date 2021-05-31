@@ -21,6 +21,7 @@ class FakeCam:
             webcam_path: str,
             akvcam_path: str,
             style_model_dir: str,
+            noise_suppressing_factor: float,
     ) -> None:
         self.check_webcam_existing(webcam_path)
         self.check_webcam_existing(akvcam_path)
@@ -33,8 +34,6 @@ class FakeCam:
         self.style_number = 0
         self.model_dir = style_model_dir
         self.styler_lock = threading.Lock()
-        self.scale_factor_lock = threading.Lock()
-        self.stop_lock = threading.Lock()
         self.is_stop = False
         self.styler = None
         self.set_style_number(self.style_number)
@@ -42,7 +41,7 @@ class FakeCam:
         self.optimize_models()
         self.current_fps = 0
         self.last_frame = None
-        self.noise_epsilon = 10
+        self.noise_epsilon = noise_suppressing_factor
 
     @staticmethod
     def check_webcam_existing(path):
@@ -55,22 +54,23 @@ class FakeCam:
         self.fake_cam_writer.schedule_frame(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
     def stop(self):
-        with self.stop_lock:
+        with self.styler_lock:
             self.is_stop = True
 
     def run(self):
         self.real_cam.start()
         t0 = time.monotonic()
-        print_fps_period = 1.0
+        print_fps_period = 5.0
         frame_count = 0
         while not self.is_stop:
             current_frame = self.real_cam.read()
             if current_frame is None:
-                print("frame none")
+                # print("frame none")
                 time.sleep(0.1)
                 continue
-            current_frame = cv2.resize(current_frame, (0, 0), fx=self.scale_factor, fy=self.scale_factor)
+
             with self.styler_lock:
+                current_frame = cv2.resize(current_frame, (0, 0), fx=self.scale_factor, fy=self.scale_factor)
                 if self.is_styling:
                     current_frame = self._supress_noise(current_frame)
                     try:
@@ -81,10 +81,10 @@ class FakeCam:
             self.put_frame(current_frame)
             frame_count += 1
             td = time.monotonic() - t0
-            # print(td)
+            #print(td)
             if td > print_fps_period:
                 self.current_fps = frame_count / td
-                print("FPS: {:6.2f}".format(self.current_fps), end="\r")
+                print("\r (FPS: {:6.2f}) Waiting for input: ".format(self.current_fps), end=" ")
                 frame_count = 0
                 t0 = time.monotonic()
         print("stopped fake cam")
@@ -92,7 +92,7 @@ class FakeCam:
         self.fake_cam_writer.stop()
 
     def _supress_noise(self, current_frame):
-        if self.last_frame is not None:
+        if self.last_frame is not None and self.last_frame.shape == current_frame.shape:
             delta = np.abs(self.last_frame - current_frame) <= self.noise_epsilon
             current_frame[delta] = self.last_frame[delta]
         self.last_frame = current_frame
@@ -118,9 +118,18 @@ class FakeCam:
         # elif self.scale_factor+addend > 2.0:
         #     print("a scale factor larger than 2.0")
         else:
-            with self.scale_factor_lock:
+            with self.styler_lock:
                 self.scale_factor = proposed_scale_factor
                 print("new scale factor is: ", self.scale_factor)
+
+    def add_to_noise_factor(self, addend=5):
+        proposed_noise_factor = round(self.noise_epsilon + addend, 1)
+        if proposed_noise_factor <= 0:
+            print("noise factor cannot be smaller than 0")
+        else:
+            with self.styler_lock:
+                self.noise_epsilon = proposed_noise_factor
+                print("new noise factor is: ", self.noise_epsilon)
 
     def set_next_style(self):
         model_paths = self._get_list_of_all_models(self.model_dir)

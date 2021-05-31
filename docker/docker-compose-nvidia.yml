@@ -5,24 +5,30 @@ services:
         container_name: stylecam_container
         stdin_open: true # docker run -i
         tty: true
-        privileged: true # allows to access all devices # Needed since i have no idea, which devices in detail are needed for pynput to work in uinput mode
+        privileged: true  # Todo maybe with new appraoch not needed
         build:
             context: ../
-            dockerfile: ./docker/${DOCKERFILE}
-        shm_size: ${SHM_SIZE}
+            dockerfile: ./docker/Dockerfile
+        shm_size: 1g
         devices:
-            - ${VIDEO_INPUT}:/dev/video0
-            #- /dev/video13:/dev/video13
+            - /dev/video0:/dev/video0 # TODO USER replace with your video input device before the :
             - /dev/uinput:/dev/uinput
-            #- /dev/console:/dev/console  # TODO those two are at least needed for pynput to work, but which else?
         runtime: nvidia
         volumes:
             - ${STYLE_TRANSFER_MODEl_PATH}:/stylecam/data/style_transfer_models
         environment:
-            - DISPLAY=${DISPLAY}
-            - PYNPUT_BACKEND_MOUSE=dummy
-            - PYNPUT_BACKEND_KEYBOARD=uinput
+            #            - DISPLAY=${DISPLAY}
+            #            - PYNPUT_BACKEND_MOUSE=dummy
+            #            - PYNPUT_BACKEND_KEYBOARD=uinput
+            #              TODO USER adapt parameters. An explanation to each parameter can be found in ../src/main.py
             - STYLE_TRANSFER_MODEl_PATH=./data/style_transfer_models
+              #Directory which (subdirectories) contains saved
+              #style transfer networks. Have to end with '.model' or '.pth'.
+            #Own styles created with https://github.com/pytorch/examples/tree/master/fast_neural_style can be used.
+            - STYLE_SCALE_FACTOR=0.7
+            #scale factor of the image sent the neural network
+            - NOISE_SUPRESSING_FACTOR=25
+            #higher values reduce noise introduced by the style transfer but might lead to skewed human faces
 
         network_mode: host
 
