@@ -5,7 +5,7 @@ video.
 Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 can be used, too.  
-AUtomatic GPU dependent Tensorrt optimization is applied to achive high frame rates.
+Automatic GPU dependent Tensorrt optimization is applied to achive high frame rates.
 
 
 *Only tested with Ubuntu 18.04 so far.
