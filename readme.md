@@ -1,8 +1,6 @@
 # Virtual Neural Style Transfer Webcam for Linux
 Ever wanted to have cool and unique filters for your video call? You found it!  
-This repository provides you a virtual linux webcam* which applies
-
-a [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style) to your webcam
+This repository provides you a virtual linux webcam* which applies a [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style) to your webcam
 video.  
 Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
@@ -35,8 +33,6 @@ fangfufu  [Linux-Fake-Background-Webcam](https://github.com/fangfufu/Linux-Fake-
 [Leon Gatys et. al.](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf)
 , [Justin Johnson et. al.](https://arxiv.org/pdf/1603.08155.pdf) and the Pytorch
 team [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)  
-Xinrui Wang et.al. ant the Tensorflow
-team   [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization)   
 Many thanks for your contributions.
 
 ## How to change and adapt styles:
@@ -69,8 +65,7 @@ by [artistic neural style transfer](https://github.com/pytorch/examples/tree/mas
 
 1. Have a good *nvidia* graphics card and driver of version larger than 465.31 installed.  
    With a Geforce 2080TI I could achieve 24 fps for the artistic style transfer with a resolution of 1280x720.
-2.
-Install [Docker](https://docs.docker.com/engine/install/ubuntu/) `curl https://get.docker.com | sh && sudo systemctl --now enable docker`  
+2. Install [Docker](https://docs.docker.com/engine/install/ubuntu/) `curl https://get.docker.com | sh && sudo systemctl --now enable docker`  
 Install [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)  
 Install [docker-compose](https://docs.docker.com/compose/install/) `sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose`
 .   
@@ -79,15 +74,15 @@ back.
 
 3. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
    Extract the file and copy the folder`style_transfer_models` to `./data` .
-4. set `VIDEO_INPUT` in `.docker/docker_compose_nvidia.yml` to your webcam device (defaults to /dev/video0).  
+4. Set `VIDEO_INPUT` in `.docker/docker_compose_nvidia.yml` to your webcam device (defaults to /dev/video0).  
    Use `v4l2-ctl --list-devices` to find your device. Consider also to adapt the environment variables in this file.
-5. change to docker dir `cd *path to repository*/docker/`  
+5. Change to docker dir `cd *path to repository*/docker/`  
    run `docker-compose -f docker-compose-nvidia.yml build`
 
 ### How to start the webcam:
 
 
-1. change to docker dir `cd *path to repository*/docker/`
+1. Change to docker dir `cd *path to repository*/docker/`
 2. For artistic style transfer: `docker-compose -f docker-compose-nvidia.yml  run stylecam`  
    You might have to start it a second time when it does not find `/dev/video13`.  
    Starting the program the first time will take several minutes, since the networks are optimized to your gpu.   
