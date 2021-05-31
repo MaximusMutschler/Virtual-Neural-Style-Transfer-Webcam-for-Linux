@@ -1,13 +1,15 @@
 # Virtual Neural Style Transfer Webcam for Linux
 Ever wanted to have cool and unique filters for your video call? You found it!  
 This repository provides you a virtual linux webcam* which applies
+
 a [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style) to your webcam
 video.  
 Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 can be used, too.
 
-*Only tested with ubuntu 18.04 so far.
+
+*Only tested with Ubuntu 18.04 so far.
  <table style="width:100%">
   <tr>
     <td><img src="media/style4.gif" alt="style4" width="100%"</td>
@@ -35,9 +37,10 @@ fangfufu  [Linux-Fake-Background-Webcam](https://github.com/fangfufu/Linux-Fake-
 team [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)  
 Xinrui Wang et.al. ant the Tensorflow
 team   [cartoon style transfer](https://github.com/SystemErrorWang/White-box-Cartoonization)   
-Many thanks for their contributions.
+Many thanks for your contributions.
 
 ## How to change and adapt styles:
+
 
 Enter 1+BACKSPACE to deactivate and activate styling  
 The program can iterate over all styles provided in the artistic style tansfer model dir (-s) and in corresponding
@@ -54,9 +57,9 @@ Press CTRL-c to exit
 
 ## How to add new styles
 
+
 Put additional artistic style tansfer models in the directory provided with the -s flag (defaults to
 ./data/style_transfer_models)
-
 You can train own styles with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 
@@ -83,6 +86,7 @@ back.
 
 ### How to start the webcam:
 
+
 1. change to docker dir `cd *path to repository*/docker/`
 2. For artistic style transfer: `docker-compose -f docker-compose-nvidia.yml  run stylecam`  
    You might have to start it a second time when it does not find `/dev/video13`.  
@@ -93,8 +97,8 @@ back.
 
 ### How to stop the webcam:
 
-1. stop the face program with `strg c`
-2. if your real webcam input is now very slow just restart the system. (I'm working on a better solution.)
+1. Stop the face program with `strg c`
+2. If your real webcam input is now very slow just restart the system. (I'm working on a better solution.)
 
 ## Installation and Starting without  Docker:
 
