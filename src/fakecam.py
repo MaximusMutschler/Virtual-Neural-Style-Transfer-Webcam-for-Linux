@@ -66,12 +66,11 @@ class FakeCam:
         while not self.is_stop:
             current_frame = self.real_cam.read()
             if current_frame is None:
+                print("frame none")
                 time.sleep(0.1)
                 continue
             current_frame = cv2.resize(current_frame, (0, 0), fx=self.scale_factor, fy=self.scale_factor)
-
             with self.styler_lock:
-
                 if self.is_styling:
                     current_frame = self._supress_noise(current_frame)
                     try:
@@ -175,8 +174,10 @@ class FakeCam:
         with self.styler_lock:
             if not self.is_styling:
                 self.is_styling = True
+                print("styling activated")
             else:
                 self.is_styling = False
+                print("styling deactivated")
 
     # speed test style transfer:
     # gpu pytorch  11.6

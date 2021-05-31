@@ -49,6 +49,7 @@ class StyleTransfer:
             style_model = TransformerNet()
             self._load_weights_into_model(modelpath, style_model)
             self._optimize_model_internal(style_model, modelpath, onnx_path, trt_engine_path, trt_network)
+            torch.cuda.empty_cache()
 
     def _optimize_model_internal(self, style_model, modelpath, onnx_path, trt_engine_path, trt_network):
         print("optimizing", modelpath)
@@ -58,6 +59,8 @@ class StyleTransfer:
             if not parser.parse(model.read()):
                 for error in range(parser.num_errors):
                     print(parser.get_error(error))
+                    if os.getuid() == 0:
+                        os.chmod(onnx_path, 0o0777)
         engine = self.trt_builder.build_engine(trt_network, self.trt_config)
         if engine is None:
             raise Exception("engine is none")
@@ -66,6 +69,8 @@ class StyleTransfer:
         print("saving tensorrt engine to ", trt_engine_path)
         with open(trt_engine_path, "wb") as f:
             f.write(engine.serialize())
+            if os.getuid() == 0:
+                os.chmod(trt_engine_path, 0o0777)
         return engine, context
 
     @staticmethod

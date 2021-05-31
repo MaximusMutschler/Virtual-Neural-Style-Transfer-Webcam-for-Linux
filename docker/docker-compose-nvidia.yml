@@ -13,16 +13,16 @@ services:
         devices:
             - ${VIDEO_INPUT}:/dev/video0
             #- /dev/video13:/dev/video13
-            #- /dev/uinput:/dev/uinput
+            - /dev/uinput:/dev/uinput
             #- /dev/console:/dev/console  # TODO those two are at least needed for pynput to work, but which else?
         runtime: nvidia
         volumes:
-            - ${CARTOONIZE_MODELS_PATH}:/stylecam/data/cartoonize_models
             - ${STYLE_TRANSFER_MODEl_PATH}:/stylecam/data/style_transfer_models
         environment:
             - DISPLAY=${DISPLAY}
             - PYNPUT_BACKEND_MOUSE=dummy
             - PYNPUT_BACKEND_KEYBOARD=uinput
+            - STYLE_TRANSFER_MODEl_PATH=./data/style_transfer_models
 
         network_mode: host
 

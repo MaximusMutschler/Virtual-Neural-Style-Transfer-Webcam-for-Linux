@@ -35,6 +35,7 @@ RUN apt update && \
       build-essential \
       && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
 RUN apt-get update &&  DEBIAN_FRONTEND=noninteractive apt-get install -y libudev-dev kbd console-data kmod
+
 ##RUN apt-get install -y python3-pip libopenblas-base libopenmpi-dev
 ##RUN pip3 install Cython
 #
@@ -60,7 +61,7 @@ RUN pip install numpy==1.19.5
 RUN pip install pynput==1.7.3
 RUN pip install onnx==1.9.0
 RUN pip install python-uinput
-RUN pip install pycuda==2021.1
+
 
 #### install host headers to get akvcam running in container
 #: adding ubuntu 18 ppa
@@ -85,8 +86,8 @@ RUN cd akvcam/src && make dkms_install
 RUN cd /stylecam/ && mkdir -p /etc/akvcam
 RUN cp akvcam_config/* /etc/akvcam/
 
-
-
+RUN pip uninstall pycuda --yes
+RUN pip install pycuda==2021.1
 
 
 

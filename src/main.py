@@ -34,7 +34,7 @@ def parse_args():
                         help="Set real webcam path")
     parser.add_argument("-v", "--akvcam-path", default="/dev/video13",
                         help="virtual akvcam output device path")
-    parser.add_argument("-s", "--style-model-dir", default="./data/style_transfer_models",
+    parser.add_argument("-s", "--style-model-dir", default="./data/style_transfer_models_bu",
                         help="Folder which (subfolders) contains saved style transfer networks. Have to end with '.model' or '.pth'. Own styles created with https://github.com/pytorch/examples/tree/master/fast_neural_style can be used.")
     return parser.parse_args()
 
@@ -58,12 +58,13 @@ def main():
 
     signal.signal(signal.SIGINT, partial(sig_interrupt_handler, cam=cam))
 
+
     keyboard.GlobalHotKeys({
-        '<ctrl>+<alt>+1': cam.switch_is_styling,
-        '<ctrl>+<alt>+2': cam.set_previous_style,
-        '<ctrl>+<alt>+3': cam.set_next_style,
-        '<ctrl>+<alt>+4': partial(cam.add_to_scale_factor, -0.1),
-        '<ctrl>+<alt>+5': partial(cam.add_to_scale_factor, 0.1),
+        '<ctrl>+1': cam.switch_is_styling,  # TODO add <alt>
+        '<ctrl>+2': cam.set_previous_style,
+        '<ctrl>+3': cam.set_next_style,
+        '<ctrl>+4': partial(cam.add_to_scale_factor, -0.1),
+        '<ctrl>+5': partial(cam.add_to_scale_factor, 0.1),
     }).start()
 
     # keyboard.KeyboardListener(on_press=on_press).start()
