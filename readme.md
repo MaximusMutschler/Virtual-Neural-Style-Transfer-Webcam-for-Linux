@@ -29,11 +29,10 @@ Automatic GPU dependent Tensorrt optimization is applied to achive high frame ra
 ## Source and Acknowledgement
 
 This work builds upon:  
-hipersayanX [akvcam](https://github.com/webcamoid/akvcam)    
-fangfufu  [Linux-Fake-Background-Webcam](https://github.com/fangfufu/Linux-Fake-Background-Webcam)  
-[Leon Gatys et. al.](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf)
-, [Justin Johnson et. al.](https://arxiv.org/pdf/1603.08155.pdf) and the Pytorch
-team [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)  
+hipersayanX's [akvcam](https://github.com/webcamoid/akvcam)    
+fangfufu's  [Linux-Fake-Background-Webcam](https://github.com/fangfufu/Linux-Fake-Background-Webcam)  
+[Leon Gatys et. al.'s](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf)
+and [Justin Johnson et. al.'s](https://arxiv.org/pdf/1603.08155.pdf) [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)  
 Many thanks for your contributions.
 
 ## How to change and adapt styles:
