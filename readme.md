@@ -4,7 +4,7 @@ This repository provides you a virtual linux webcam* which applies a [artistic n
 video.  
 Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
-can be used, too.
+can be used, too.  
 AUtomatic GPU dependent Tensorrt optimization is applied to achive high frame rates.
 
 
