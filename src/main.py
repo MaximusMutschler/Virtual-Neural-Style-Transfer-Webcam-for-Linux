@@ -55,7 +55,7 @@ def main():
     print("Enter 5+BACKSPACE to increase the scale factor of the model input")
     print("Enter 6+BACKSPACE to decrease the noise suppression factor")
     print("Enter 7+BACKSPACE to increase the noise suppression factor")
-    print("Please CTRL-c to exit")
+    print("Press CTRL-c to exit")
 
     def listen_for_input():
         t = threading.currentThread()
@@ -80,7 +80,8 @@ def main():
             time.sleep(1)
 
     listen_thread = threading.Thread(target=listen_for_input, daemon=True)
-    listen_thread.start()
+
+    # listen_thread.start()
 
     def sig_interrupt_handler(signal_, frame_, cam_):
         print("Stopping fake cam process")

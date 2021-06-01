@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 
 from akvcam import AkvCameraWriter
+from deepfake.demo import Deepfake
 from realcam import RealCam
 from style_transfer.neural_style import StyleTransfer
 
@@ -35,10 +36,11 @@ class FakeCam:
         self.model_dir = style_model_dir
         self.styler_lock = threading.Lock()
         self.is_stop = False
-        self.styler = None
-        self.set_style_number(self.style_number)
+        # elf.styler = None
+        self.styler = Deepfake()
+        # self.set_style_number(self.style_number)
         self.is_styling = True
-        self.optimize_models()
+        # self.optimize_models()
         self.current_fps = 0
         self.last_frame = None
         self.noise_epsilon = noise_suppressing_factor
