@@ -5,14 +5,13 @@ services:
         container_name: stylecam_container
         stdin_open: true # docker run -i
         tty: true
+        privileged: true
         build:
             context: ../
             dockerfile: ./docker/Dockerfile
         shm_size: 1g
         devices:
             - /dev/video0:/dev/video0 # TODO USER replace with your video input device before the :
-            - /dev/video12:/dev/video12
-            - /dev/video13:/dev/video13
         runtime: nvidia
         volumes:
             - ${STYLE_TRANSFER_MODEl_PATH}:/stylecam/data/style_transfer_models

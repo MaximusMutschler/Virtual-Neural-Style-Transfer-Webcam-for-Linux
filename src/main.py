@@ -55,10 +55,10 @@ def main():
     print("Enter 5+BACKSPACE to increase the scale factor of the model input")
     print("Enter 6+BACKSPACE to decrease the noise suppression factor")
     print("Enter 7+BACKSPACE to increase the noise suppression factor")
-    print("Please CTRL-c to exit")
+    print("Press CTRL-c to exit")
 
     def listen_for_input():
-        t = threading.currentThread()
+        # t = threading.currentThread()
         while True:
             input_ = input()
             if input_ == "1":
