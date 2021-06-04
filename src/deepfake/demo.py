@@ -15,8 +15,8 @@ from deepfake.sync_batchnorm import DataParallelWithCallback
 class Deepfake:
 
     def __init__(self):
-        self.source_image = imageio.imread("src/deepfake/hermine.png")
-        self.source_image = resize(self.source_image, (256, 512))[..., :3]  # also other frame sizes work
+        self.source_image = imageio.imread("src/deepfake/merkel.png")
+        self.source_image = resize(self.source_image, (256, 256))[..., :3]  # also other frame sizes work
         self.generator, self.kp_detector = self.load_checkpoints(config_path="src/deepfake/config/vox-256.yaml",
                                                                  checkpoint_path="src/deepfake/vox-cpk.pth.tar",
                                                                  cpu=False)
@@ -24,11 +24,11 @@ class Deepfake:
     def stylize(self, frame):
         frame_shape = frame.shape
         frame = frame.astype(np.float32) / 127.5 - 1
-        driving_video = [resize(frame, (256, 512))[..., :3] for i in range(1)]
+        driving_video = [resize(frame, (256, 256))[..., :3] for i in range(3)]
         predictions = self.make_animation(self.source_image, driving_video, self.generator, self.kp_detector,
                                           relative=True,
                                           adapt_movement_scale=True, cpu=False)
-        out = np.array(predictions[0])
+        out = np.array(predictions[2])
         out = resize(out, (frame_shape[0], frame_shape[1]))[..., :3]
         out = out * 255
         out = np.clip(out, 0, 255).astype(np.uint8)
