@@ -18,7 +18,7 @@ services:
         environment:
             # TODO USER adapt parameters. An explanation to each parameter can be found in ../src/main.py
             - STYLE_TRANSFER_MODEl_PATH=./data/style_transfer_models
-              #Directory which (subdirectories) contains saved
+            #Directory which (subdirectories) contains saved
             #style transfer networks. Have to end with '.model' or '.pth'.
             #Own styles created with https://github.com/pytorch/examples/tree/master/fast_neural_style can be used.
             - STYLE_SCALE_FACTOR=0.7
@@ -28,5 +28,5 @@ services:
 
         network_mode: host
 
-        entrypoint: /stylecam/entryscript.sh
-        #entrypoint: /bin/bash
+        #entrypoint: /stylecam/entryscript.sh
+        entrypoint: /bin/bash

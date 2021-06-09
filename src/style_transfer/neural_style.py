@@ -7,6 +7,8 @@ import numpy as np
 import onnx
 # noinspection PyUnresolvedReferences
 import pycuda.autoinit  # important for tensorrt to work
+
+pycuda.autoinit.context.detach()
 import pycuda.driver as cuda
 import tensorrt as trt
 import torch
@@ -31,6 +33,7 @@ class StyleTransfer:
         self._create_tensorrt_network_and_config()
         self.trt_context = None
         self.trt_engine = None
+        self.cuda_context = None
         self.load_model(style_model_path)
         self._load_model_internal()
         self.is_new_model = False
@@ -83,9 +86,18 @@ class StyleTransfer:
 
     def _load_model_internal(self):
         # this only works if called form the main thread!
-        del self.trt_engine
         del self.trt_context
+        del self.trt_engine
         gc.collect()
+        torch.cuda.empty_cache()
+
+        # pycuda.driver.Context
+        # Needed for TensorRt Version 7.2 in Docker Container to release memory. Not needed for Tensorrt 8
+        # Makes style changing significantly slower
+        if self.cuda_context is not None:
+            self.cuda_context.detach()
+        self.cuda_context = pycuda.tools.make_default_context()
+
         self._load_weights_into_model(self.style_model_weights_path, self.style_model)
         # optimize
         base_path = "".join(self.style_model_weights_path.split(".")[:-1])

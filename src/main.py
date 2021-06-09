@@ -1,10 +1,8 @@
 import os
-import time
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-import signal
 import sys
 from argparse import ArgumentParser
-from functools import partial
 import threading
 from fakecam import FakeCam
 
@@ -55,7 +53,7 @@ def main():
     print("Enter 5+BACKSPACE to increase the scale factor of the model input")
     print("Enter 6+BACKSPACE to decrease the noise suppression factor")
     print("Enter 7+BACKSPACE to increase the noise suppression factor")
-    print("Press CTRL-c to exit")
+    print("Press c+BACKSPACE to exit")
 
     def listen_for_input():
         # t = threading.currentThread()
@@ -75,6 +73,8 @@ def main():
                 cam.add_to_noise_factor(-5)
             elif input_ == "7":
                 cam.add_to_noise_factor(5)
+            elif input_ == "exit" or "c" or "q":
+                cam.stop()
             else:
                 print("input {} was not recognized".format(input_))
             time.sleep(1)
@@ -82,11 +82,7 @@ def main():
     listen_thread = threading.Thread(target=listen_for_input, daemon=True)
     listen_thread.start()
 
-    def sig_interrupt_handler(signal_, frame_, cam_):
-        print("Stopping fake cam process")
-        cam_.stop()
 
-    signal.signal(signal.SIGINT, partial(sig_interrupt_handler, cam_=cam))
 
     cam.run()  # loops
 
@@ -99,3 +95,32 @@ if __name__ == "__main__":
     main()
 
 # TODO make deepfake version https://www.youtube.com/watch?v=mUfJOQKdtAk
+
+
+import time
+
+# while True:
+#     r=torch.rand([1000,1000,1000])
+#     r.cuda()
+#     a=r*2
+#     print("placed on cuda waiting 5s")
+#
+#     time.sleep(5)
+#     print( "alloc mem:" ,torch.cuda.memory_allocated(0)/2**20 )
+#     print( "reserved mem:", torch.cuda.memory_reserved(0)/2**20 )
+#
+#
+#     del r
+#     del a
+#     torch.cuda.empty_cache()
+#     gc.collect()
+#     torch.cuda.empty_cache()
+#
+#     print("freed memory wainting 5s")
+#
+#     time.sleep(5)
+#     print( "alloc mem:", torch.cuda.memory_allocated(0)/2**20)
+#     print( "reserved mem:", torch.cuda.memory_reserved(0)/2**20 )
+#
+#     print("redo")
+#     print("-"*50)
