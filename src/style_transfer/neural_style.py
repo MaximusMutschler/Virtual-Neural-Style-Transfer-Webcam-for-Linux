@@ -52,7 +52,18 @@ class StyleTransfer:
             style_model = TransformerNet()
             self._load_weights_into_model(modelpath, style_model)
             self._optimize_model_internal(style_model, modelpath, onnx_path, trt_engine_path, trt_network)
-            torch.cuda.empty_cache()
+            self._free_gpu_memory()
+
+    def _free_gpu_memory(self):
+        gc.collect()
+        torch.cuda.empty_cache()
+        torch.cuda.empty_cache()
+        # pycuda.driver.Context
+        # Needed for TensorRt Version 7.2 in Docker Container to release memory. Not needed for Tensorrt 8
+        # Makes style changing significantly slower
+        if self.cuda_context is not None:
+            self.cuda_context.detach()
+        self.cuda_context = pycuda.tools.make_default_context()
 
     def _optimize_model_internal(self, style_model, modelpath, onnx_path, trt_engine_path, trt_network):
         print("optimizing", modelpath)
@@ -88,15 +99,8 @@ class StyleTransfer:
         # this only works if called form the main thread!
         del self.trt_context
         del self.trt_engine
-        gc.collect()
-        torch.cuda.empty_cache()
 
-        # pycuda.driver.Context
-        # Needed for TensorRt Version 7.2 in Docker Container to release memory. Not needed for Tensorrt 8
-        # Makes style changing significantly slower
-        if self.cuda_context is not None:
-            self.cuda_context.detach()
-        self.cuda_context = pycuda.tools.make_default_context()
+        self._free_gpu_memory()
 
         self._load_weights_into_model(self.style_model_weights_path, self.style_model)
         # optimize

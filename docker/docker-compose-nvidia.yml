@@ -28,5 +28,5 @@ services:
 
         network_mode: host
 
-        #entrypoint: /stylecam/entryscript.sh
-        entrypoint: /bin/bash
+        entrypoint: /stylecam/entryscript.sh
+        #entrypoint: /bin/bash

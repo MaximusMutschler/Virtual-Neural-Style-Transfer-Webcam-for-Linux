@@ -1,13 +1,14 @@
 import os
-
+import time
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import sys
 from argparse import ArgumentParser
 import threading
 from fakecam import FakeCam
 
+
 def parse_args():
-    parser = ArgumentParser(description="Applying stylees to your web cam image under \
+    parser = ArgumentParser(description="Applying styles to your web cam image under \
                             GNU/Linux. For more information, please refer to: \
                             TODO")
     parser.add_argument("-W", "--width", default=1280, type=int,
@@ -73,7 +74,7 @@ def main():
                 cam.add_to_noise_factor(-5)
             elif input_ == "7":
                 cam.add_to_noise_factor(5)
-            elif input_ == "exit" or "c" or "q":
+            elif input_ == "c":
                 cam.stop()
             else:
                 print("input {} was not recognized".format(input_))
@@ -82,12 +83,8 @@ def main():
     listen_thread = threading.Thread(target=listen_for_input, daemon=True)
     listen_thread.start()
 
-
-
     cam.run()  # loops
-
     print("exit 0")
-
     sys.exit(0)
 
 
@@ -95,32 +92,3 @@ if __name__ == "__main__":
     main()
 
 # TODO make deepfake version https://www.youtube.com/watch?v=mUfJOQKdtAk
-
-
-import time
-
-# while True:
-#     r=torch.rand([1000,1000,1000])
-#     r.cuda()
-#     a=r*2
-#     print("placed on cuda waiting 5s")
-#
-#     time.sleep(5)
-#     print( "alloc mem:" ,torch.cuda.memory_allocated(0)/2**20 )
-#     print( "reserved mem:", torch.cuda.memory_reserved(0)/2**20 )
-#
-#
-#     del r
-#     del a
-#     torch.cuda.empty_cache()
-#     gc.collect()
-#     torch.cuda.empty_cache()
-#
-#     print("freed memory wainting 5s")
-#
-#     time.sleep(5)
-#     print( "alloc mem:", torch.cuda.memory_allocated(0)/2**20)
-#     print( "reserved mem:", torch.cuda.memory_reserved(0)/2**20 )
-#
-#     print("redo")
-#     print("-"*50)
