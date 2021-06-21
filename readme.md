@@ -63,7 +63,7 @@ by [artistic neural style transfer](https://github.com/pytorch/examples/tree/mas
 
 ### Requirements and Installation if using Docker:
 
-1. Have a good *nvidia* graphics card and a driver of version larger than 465.31 installed.  
+1. Have a good *nvidia* graphics card with driver of version 465.31 or newer installed.  
    With a Geforce 2080TI I could achieve 24 fps for the artistic style transfer with a resolution of 1280x720.
 2. Install [Docker](https://docs.docker.com/engine/install/ubuntu/) `curl https://get.docker.com | sh && sudo systemctl --now enable docker`  
 Install [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)  
