@@ -7,15 +7,17 @@ by [artistic neural style transfer](https://github.com/pytorch/examples/tree/mas
 can be used, too.  
 Automatic GPU dependent Tensorrt optimization is applied to achieve high frame rates.
 *Only tested with Ubuntu 18.04 so far.
-<video width="320" height="240" controls>
+
+
+<iframe width="320" height="240" controls>
 src="https://youtu.be/7GAVroRsKNc">
-</video> 
-<video width="320" height="240" controls>
+</iframe> 
+<iframe width="320" height="240" controls>
 src="https://youtu.be/nBJnGyzXK-I">
-</video> 
-<video width="320" height="240" controls>
+</iframe> 
+<iframe width="320" height="240" controls>
 src="https://youtu.be/5MbDGsOvkp4">
-</video> 
+</iframe> 
 
 
  <table style="width:100%">
