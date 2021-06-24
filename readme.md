@@ -22,7 +22,7 @@ Automatic GPU dependent Tensorrt optimization is applied to achieve high frame r
 
 
 </table> 
-Some recordings of zoom calls introducing a subst of the provided styles.
+Some recordings of zoom calls introducing a subset of the provided styles.
 
 ## Source and Acknowledgement
 
