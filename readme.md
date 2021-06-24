@@ -2,7 +2,7 @@
 Ever wanted to have cool and unique filters for your video call? You found it!  
 This repository provides you a virtual linux webcam* which applies an [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style) to your webcam
 video.   
-It can be used like any other webcam in all types of video conferencing tools, such as zoom, skype, discord, teams... . 
+It can be used like any other webcam in all types of video conferencing tools, such as zoom, skype, discord, teams... .   
 Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 can be used, too.  
