@@ -6,9 +6,18 @@ Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 can be used, too.  
 Automatic GPU dependent Tensorrt optimization is applied to achieve high frame rates.
-
-
 *Only tested with Ubuntu 18.04 so far.
+<video width="320" height="240" controls>
+src="https://youtu.be/7GAVroRsKNc">
+</video> 
+<video width="320" height="240" controls>
+src="https://youtu.be/nBJnGyzXK-I">
+</video> 
+<video width="320" height="240" controls>
+src="https://youtu.be/5MbDGsOvkp4">
+</video> 
+
+
  <table style="width:100%">
   <tr>
     <td><img src="media/style4.gif" alt="style4" width="100%"</td>
@@ -25,6 +34,7 @@ Automatic GPU dependent Tensorrt optimization is applied to achieve high frame r
     <td><img src="media/style5.gif" alt="style4" width="100%"</td>
   </tr>
 </table> 
+A subset of the available styles. In the current version the background noise got removed.
 
 ## Source and Acknowledgement
 
