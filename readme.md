@@ -1,42 +1,28 @@
 # Virtual Neural Style Transfer Webcam for Linux
 Ever wanted to have cool and unique filters for your video call? You found it!  
 This repository provides you a virtual linux webcam* which applies an [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style) to your webcam
-video.  
+video.   
+It can be used like any other webcam in all types of video conferencing tools, such as zoom, skype, discord, teams... . 
 Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 can be used, too.  
-Automatic GPU dependent Tensorrt optimization is applied to achieve high frame rates.
+Automatic GPU dependent Tensorrt optimization is applied to achieve high frame rates.  
 *Only tested with Ubuntu 18.04 so far.
-
-
-<iframe width="320" height="240" controls>
-src="https://youtu.be/7GAVroRsKNc">
-</iframe> 
-<iframe width="320" height="240" controls>
-src="https://youtu.be/nBJnGyzXK-I">
-</iframe> 
-<iframe width="320" height="240" controls>
-src="https://youtu.be/5MbDGsOvkp4">
-</iframe> 
-
 
  <table style="width:100%">
   <tr>
-    <td><img src="media/style4.gif" alt="style4" width="100%"</td>
-    <td><img src="media/style7.gif" alt="style7" width="100%"</td>
-    <td><img src="media/style3.gif" alt="style3" width="100%"</td>
+      <td colspan="2" align=center  ><img src="media/zoom_vid1.gif" alt="zoom_vid1" width="50%" ></td>
   </tr>
-    <td><img src="media/style10.gif" alt="style10" width="100%"</td>
-    <td><img src="media/style9.gif" alt="style9" width="100%"</td>
-    <td><img src="media/style6.gif" alt="style6" width="100%"</td>
+  <tr>
   </tr>
-    </tr>
-    <td><img src="media/style2.gif" alt="style2" width="100%"</td>
-    <td><img src="media/style8.gif" alt="style8" width="100%"</td>
-    <td><img src="media/style5.gif" alt="style4" width="100%"</td>
+  <tr>
+    <td><img src="media/zoom_vid2.gif" alt="zoom_vid2" width="100%"></td>
+    <td><img src="media/zoom_vid3.gif" alt="zoom_vid3" width="100%"></td>
   </tr>
+
+
 </table> 
-A subset of the available styles. In the current version the background noise got removed.
+Some recordings of zoom calls introducing a subst of the provided styles.
 
 ## Source and Acknowledgement
 
