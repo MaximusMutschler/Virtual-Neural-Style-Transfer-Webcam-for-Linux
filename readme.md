@@ -83,6 +83,8 @@ back.
    Use `v4l2-ctl --list-devices` to find your device. Consider also to adapt the environment variables in this file.
 5. Change to docker dir `cd *path to repository*/docker/`  
    run `docker-compose -f docker-compose-nvidia.yml build`
+6. (if your linux got updated to a newer kernel at some later point, you have to run    
+ `docker-compose -f docker-compose-nvidia.yml build --no-cache` to get the script working again.)
 
 ### How to start the webcam:
 
@@ -120,8 +122,8 @@ back.
 4. Install the cuda libraries with version >= [cuda 11.0](https://developer.nvidia.com/cuda-11.0-download-archive)
    installed.
 5. Install tensorrt python wheels with version > 8.0.0.3
-5. Install python packages given in the requirements.txt.
-8. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
+6. Install python packages given in the requirements.txt.
+7. Download the [style models](https://u-173-c142.cs.uni-tuebingen.de/index.php/s/ierXwx3DS8X48ss).   
    Extract the file and copy the folders to `./data` .
 
 ### How to start the webcam:
