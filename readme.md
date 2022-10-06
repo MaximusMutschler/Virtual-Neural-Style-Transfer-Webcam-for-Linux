@@ -6,7 +6,7 @@ It can be used like any other webcam in all types of video conferencing tools, s
 Own styles trained with the code provided
 by [artistic neural style transfer](https://github.com/pytorch/examples/tree/master/fast_neural_style)
 can be used, too.  
-Automatic GPU dependent Tensorrt optimization is applied to achieve high frame rates.  
+Automatic GPU dependent TensorRT optimization is applied to achieve high frame rates.  
 *Only tested with Ubuntu 18.04 and 20.04 so far.
 
  <table style="width:100%">
